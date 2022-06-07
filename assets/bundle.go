@@ -13,6 +13,8 @@ import (
 	"path/filepath"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/tomknightdev/dwarven-fortresses/enums"
 )
 
@@ -27,10 +29,14 @@ const (
 )
 
 var (
+<<<<<<< HEAD
 	TileSize      int
 	TilesetImages = make(map[string]*ebiten.Image)
 	OpaqueImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
 	TransImages   = make(map[enums.TileTypeEnum]*ebiten.Image)
+=======
+	MainAudio *mp3.Stream
+>>>>>>> master
 )
 
 type TilesetDefinition struct {
@@ -50,6 +56,11 @@ type Tile struct {
 }
 
 func init() {
+	LoadImages()
+	LoadAudio()
+}
+
+func LoadImages() {
 	abs, err := filepath.Abs("./assets/images/tileset.json")
 	if err == nil {
 		fmt.Println("Absolute:", abs)
@@ -93,4 +104,19 @@ func init() {
 		OpaqueImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.OpaqueFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
 		TransImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.TransparentFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
 	}
+<<<<<<< HEAD
+=======
+
+}
+
+func LoadAudio() {
+	audio, err := ebitenutil.OpenFile("./assets/audio/scenes/main.mp3")
+	if err != nil {
+		log.Fatal(err)
+	}
+	MainAudio, err = mp3.DecodeWithSampleRate(44100, audio)
+	if err != nil {
+		log.Fatal(err)
+	}
+>>>>>>> master
 }
