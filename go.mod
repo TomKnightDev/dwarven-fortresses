@@ -14,6 +14,7 @@ require (
 	github.com/hajimehoshi/go-mp3 v0.3.3 // indirect
 	github.com/hajimehoshi/oto/v2 v2.1.0 // indirect
 	github.com/jezek/xgb v1.0.1 // indirect
+	github.com/ojrac/opensimplex-go v1.0.2 // indirect
 	golang.org/x/exp/shiny v0.0.0-20220602145555-4a0574d9293f // indirect
 	golang.org/x/image v0.0.0-20220601225756-64ec528b34cd // indirect
 	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd // indirect
