@@ -155,7 +155,7 @@ func (p *Pathfinder) Update(w engine.World) {
 
 func (p Pathfinder) GetPath(startPos components.Position, endPos components.Position, grids map[int]*paths.Grid, tileByType map[enums.TileTypeEnum][]components.Position) []components.Path {
 	if startPos.Z == endPos.Z {
-		path := grids[endPos.Z].GetPath(float64(startPos.X*assets.CellSize), float64(startPos.Y*assets.CellSize), float64(endPos.X*assets.CellSize), float64(endPos.Y*assets.CellSize), true, false)
+		path := grids[endPos.Z].GetPath(float64(startPos.X*assets.TileSize), float64(startPos.Y*assets.TileSize), float64(endPos.X*assets.TileSize), float64(endPos.Y*assets.TileSize), true, false)
 
 		if path != nil && len(path.Cells) > 0 {
 			return []components.Path{
@@ -183,7 +183,7 @@ func (p Pathfinder) GetPath(startPos components.Position, endPos components.Posi
 	var reached bool
 	// Find route to each stair from current location, checking if each can get to final destination
 	for _, tt := range travTiles[direction] {
-		path := grids[startPos.Z].GetPath(float64(startPos.X*assets.CellSize), float64(startPos.Y*assets.CellSize), float64(tt.X*assets.CellSize), float64(tt.Y*assets.CellSize), true, false)
+		path := grids[startPos.Z].GetPath(float64(startPos.X*assets.TileSize), float64(startPos.Y*assets.TileSize), float64(tt.X*assets.TileSize), float64(tt.Y*assets.TileSize), true, false)
 
 		if path == nil {
 			continue
@@ -215,7 +215,7 @@ func (p Pathfinder) GetPath(startPos components.Position, endPos components.Posi
 func (p Pathfinder) traverseLevel(paths []components.Path, travTiles []components.Position, direction bool, startPos, finalDest components.Position, grids map[int]*paths.Grid) ([]components.Path, bool) {
 	// First thing to try is if we can reach final destination
 	if startPos.Z == finalDest.Z {
-		path := grids[finalDest.Z].GetPath(float64(startPos.X*assets.CellSize), float64(startPos.Y*assets.CellSize), float64(finalDest.X*assets.CellSize), float64(finalDest.Y*assets.CellSize), true, false)
+		path := grids[finalDest.Z].GetPath(float64(startPos.X*assets.TileSize), float64(startPos.Y*assets.TileSize), float64(finalDest.X*assets.TileSize), float64(finalDest.Y*assets.TileSize), true, false)
 
 		if path != nil {
 			paths = append(paths, components.Path{
@@ -228,7 +228,7 @@ func (p Pathfinder) traverseLevel(paths []components.Path, travTiles []component
 
 	for _, tt := range travTiles {
 		if tt.Z == startPos.Z {
-			path := grids[startPos.Z].GetPath(float64(startPos.X*assets.CellSize), float64(startPos.Y*assets.CellSize), float64(tt.X*assets.CellSize), float64(tt.Y*assets.CellSize), true, false)
+			path := grids[startPos.Z].GetPath(float64(startPos.X*assets.TileSize), float64(startPos.Y*assets.TileSize), float64(tt.X*assets.TileSize), float64(tt.Y*assets.TileSize), true, false)
 
 			if path != nil {
 				paths = append(paths, components.Path{

@@ -51,8 +51,8 @@ func (m *Mouse) Update(w engine.World) {
 	ww, wh := ebiten.WindowSize()
 	inputSingleton.MouseWorldPosX = inputSingleton.MousePosX + (camPos.X - (ww / 2))
 	inputSingleton.MouseWorldPosY = inputSingleton.MousePosY + (camPos.Y - (wh / 2))
-	p.X = int((float64(inputSingleton.MouseWorldPosX) / zoom.Value) / float64(assets.CellSize))
-	p.Y = int((float64(inputSingleton.MouseWorldPosY) / zoom.Value) / float64(assets.CellSize))
+	p.X = int((float64(inputSingleton.MouseWorldPosX) / zoom.Value) / float64(assets.TileSize))
+	p.Y = int((float64(inputSingleton.MouseWorldPosY) / zoom.Value) / float64(assets.TileSize))
 	p.Z = camPos.Z
 
 	if inputSingleton.IsResetInputModePressed {

@@ -37,7 +37,7 @@ func DrawImage(w engine.World, screen *ebiten.Image, pos components.Position, im
 	}
 
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(pos.X*assets.CellSize), float64(pos.Y*assets.CellSize))
+	op.GeoM.Translate(float64(pos.X*assets.TileSize), float64(pos.Y*assets.TileSize))
 
 	op.GeoM.Scale(zoom.Value, zoom.Value)
 
@@ -66,7 +66,7 @@ func DrawImages(w engine.World, screen *ebiten.Image, offScreen *ebiten.Image, e
 		}
 
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(p.X*assets.CellSize), float64(p.Y*assets.CellSize))
+		op.GeoM.Translate(float64(p.X*assets.TileSize), float64(p.Y*assets.TileSize))
 		offScreen.DrawImage(s.Image, op)
 	}
 
@@ -92,7 +92,7 @@ func UpdateTile(w engine.World, fromTileType, newTileType enums.TileTypeEnum, ti
 		tm.Get(&tmPos, &tmSprite)
 		if tmPos.Z == tile.Z {
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(tile.X*assets.CellSize), float64(tile.Y*assets.CellSize))
+			op.GeoM.Translate(float64(tile.X*assets.TileSize), float64(tile.Y*assets.TileSize))
 
 			switch newTileType {
 			case enums.TileTypeGrass0:
