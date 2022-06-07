@@ -167,8 +167,8 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 				}
 
 				if z == 5 {
-					t.TileType = components.NewTileType(enums.TileTypeDirt0)
-					t.Image = assets.OpaqueImages[enums.TileTypeDirt0]
+					t.TileType = components.NewTileType(enums.TileTypeGrass0)
+					t.Image = assets.OpaqueImages[enums.TileTypeGrass0]
 				} else if z < 5 {
 					t.TileType = components.NewTileType(enums.TileTypeRock)
 					// t.Image = assets.Images["rock"]
@@ -188,7 +188,7 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 	// Setup resource tiles
 	rand.Seed(time.Now().UnixNano())
 
-	for _, tile := range gms.TilesByType[enums.TileTypeDirt0] {
+	for _, tile := range gms.TilesByType[enums.TileTypeGrass0] {
 		if rand.Intn(100) < 5 {
 			g := gms.Grids[tile.Z]
 			c := g.Get(tile.X, tile.Y)

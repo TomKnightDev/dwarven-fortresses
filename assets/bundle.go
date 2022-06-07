@@ -29,14 +29,11 @@ const (
 )
 
 var (
-<<<<<<< HEAD
 	TileSize      int
 	TilesetImages = make(map[string]*ebiten.Image)
 	OpaqueImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
 	TransImages   = make(map[enums.TileTypeEnum]*ebiten.Image)
-=======
-	MainAudio *mp3.Stream
->>>>>>> master
+	MainAudio     *mp3.Stream
 )
 
 type TilesetDefinition struct {
@@ -104,8 +101,6 @@ func LoadImages() {
 		OpaqueImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.OpaqueFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
 		TransImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.TransparentFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
 	}
-<<<<<<< HEAD
-=======
 
 }
 
@@ -118,5 +113,4 @@ func LoadAudio() {
 	if err != nil {
 		log.Fatal(err)
 	}
->>>>>>> master
 }
