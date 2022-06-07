@@ -15,6 +15,6 @@ type NatureSingleton struct {
 func NewNatureSingleton() NatureSingleton {
 	return NatureSingleton{
 		GrowTimer: 100,
-		OffScreen: ebiten.NewImage(assets.WorldWidth*assets.CellSize, assets.WorldHeight*assets.CellSize),
+		OffScreen: ebiten.NewImage(assets.WorldWidth*assets.TileSize, assets.WorldHeight*assets.TileSize),
 	}
 }

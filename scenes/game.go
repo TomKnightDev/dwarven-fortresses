@@ -85,7 +85,7 @@ func (g *Game) Setup(w engine.World) {
 	cx, cy := ebiten.CursorPosition()
 	w.AddEntities(&entities.Mouse{
 		Position: components.NewPosition(cx, cy, 5),
-		Sprite:   components.NewSprite(assets.Images[enums.TileTypeEmpty]),
+		Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeEmpty]),
 		Mouse:    components.NewMouse(),
 	})
 
@@ -102,19 +102,19 @@ func (g *Game) Setup(w engine.World) {
 func setupGui(w engine.World) {
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(10, 200, 3.0, enums.GuiActionStair),
-		Sprite: components.NewSprite(assets.Images[enums.TileTypeStairDown]),
+		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeStairDown]),
 	})
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(10, 250, 3.0, enums.GuiActionChop),
-		Sprite: components.NewSprite(assets.Images[enums.TileTypeTree0]),
+		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeTree0]),
 	})
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(10, 300, 3.0, enums.GuiActionMine),
-		Sprite: components.NewSprite(assets.Images[enums.TileTypePickaxe]),
+		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypePickaxe]),
 	})
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(10, 350, 3.0, enums.GuiActionStockpile),
-		Sprite: components.NewSprite(assets.Images[enums.TileTypeStockpile]),
+		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeStockpile]),
 	})
 }
 

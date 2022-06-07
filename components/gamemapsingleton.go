@@ -26,7 +26,7 @@ type GameMapSingleton struct {
 func NewGameMapSingleton() GameMapSingleton {
 	gm := GameMapSingleton{
 		Grids:     make(map[int]*paths.Grid),
-		OffScreen: ebiten.NewImage(assets.WorldWidth*assets.CellSize, assets.WorldHeight*assets.CellSize),
+		OffScreen: ebiten.NewImage(assets.WorldWidth*assets.TileSize, assets.WorldHeight*assets.TileSize),
 		TilesByZ: map[int][]struct {
 			Position
 			TileType

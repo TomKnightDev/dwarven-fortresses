@@ -74,7 +74,7 @@ func (g Gui) Within(gui components.Gui, x, y int) bool {
 }
 
 func (g Gui) scalePos(gui components.Gui) (int, int) {
-	x := gui.X + int(gui.Scale)*assets.CellSize
-	y := gui.Y + int(gui.Scale)*assets.CellSize
+	x := gui.X + int(gui.Scale)*assets.TileSize
+	y := gui.Y + int(gui.Scale)*assets.TileSize
 	return x, y
 }

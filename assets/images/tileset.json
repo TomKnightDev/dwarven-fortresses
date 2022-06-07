@@ -1,146 +1,196 @@
 {
-  "tilesetName": "Default",
-  "tilesetFileName": "map.png",
-  "transparentTilesetFileName": "trans_map.png",
+  "tilesetName": "TinyDungeon",
+  "tilesetFileNames": [
+    "tiny_dungeon_interface.png",
+    "tiny_dungeon_world.png",
+    "tiny_dungeon_monsters.png",
+    "tiny_dungeon_items.png"
+  ],
   "tileSize": 16,
   "tiles": [
     {
       "name": "empty",
       "id": 0,
-      "x": 0,
-      "y": 0
+      "opaqueFileName": "tiny_dungeon_interface.png",
+      "transparentFileName": "tiny_dungeon_interface.png",
+      "x": 4,
+      "y": 5
     },
     {
         "name": "cursor",
         "id": 1,
-        "x": 28,
-        "y": 14
+        "opaqueFileName": "tiny_dungeon_interface.png",
+        "transparentFileName": "tiny_dungeon_interface.png",
+        "x": 8,
+        "y": 8
       },
       {
         "name": "stockpile",
         "id": 2,
-        "x": 29,
-        "y": 14
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 12,
+        "y": 11
       },
       {
         "name": "rock",
         "id": 3,
-        "x": 19,
-        "y": 1
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 0,
+        "y": 0
       },
       {
         "name": "rockfloor",
         "id": 4,
-        "x": 2,
-        "y": 0
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 0,
+        "y": 4
       },
       {
         "name": "rocks",
         "id": 5,
-        "x": 5,
-        "y": 2
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 14,
+        "y": 12
       },
       {
         "name": "dirt0",
         "id": 6,
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
         "x": 0,
-        "y": 0
+        "y": 5
       },
       {
         "name": "dirt1",
         "id": 7,
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
         "x": 1,
-        "y": 0
+        "y": 5
       },
       {
         "name": "grass0",
         "id": 8,
-        "x": 5,
-        "y": 0
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 8,
+        "y": 5
       },
       {
         "name": "grass1",
         "id": 9,
-        "x": 6,
-        "y": 0
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 8,
+        "y": 6
       },
       {
         "name": "grass2",
         "id": 10,
-        "x": 7,
-        "y": 0
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 8,
+        "y": 7
       },
       {
         "name": "tree0",
         "id": 11,
-        "x": 0,
-        "y": 1
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 5,
+        "y": 16
       },
       {
         "name": "tree1",
         "id": 12,
-        "x": 1,
-        "y": 1
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 6,
+        "y": 16
       },
       {
         "name": "tree2",
         "id": 13,
-        "x": 2,
-        "y": 1
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 5,
+        "y": 16
       },
       {
         "name": "tree3",
         "id": 14,
-        "x": 3,
-        "y": 1
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 6,
+        "y": 16
       },
       {
         "name": "tree4",
         "id": 15,
-        "x": 4,
-        "y": 1
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 5,
+        "y": 16
       },
       {
         "name": "tree5",
         "id": 16,
-        "x": 5,
-        "y": 1
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 6,
+        "y": 16
       },
       {
         "name": "log0",
         "id": 17,
-        "x": 20,
-        "y": 6
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 3,
+        "y": 17
       },
       {
         "name": "water",
         "id": 18,
-        "x": 14,
-        "y": 5
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 1,
+        "y": 8
       },
       {
         "name": "dwarf",
         "id": 19,
-        "x": 25,
-        "y": 0
+        "opaqueFileName": "tiny_dungeon_monsters.png",
+        "transparentFileName": "tiny_dungeon_monsters.png",
+        "x": 4,
+        "y": 24
       },
       {
         "name": "stairdown",
         "id": 20,
-        "x": 3,
-        "y": 6
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 13,
+        "y": 10
       },
       {
         "name": "stairup",
         "id": 21,
-        "x": 2,
-        "y": 6
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 13,
+        "y": 0
       },
       {
         "name": "pickaxe",
         "id": 22,
-        "x": 11,
-        "y": 27
+        "opaqueFileName": "tiny_dungeon_items.png",
+        "transparentFileName": "tiny_dungeon_items.png",
+        "x": 4,
+        "y": 4
       }
   ]
 }

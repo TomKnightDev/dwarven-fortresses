@@ -41,11 +41,11 @@ func (n *Nature) Update(w engine.World) {
 	gms.Get(&gmComp)
 
 	// Pick a random tile, if dirt, make grass
-	tiles := gmComp.TilesByType[enums.TileTypeDirt0]
+	tiles := gmComp.TilesByType[enums.TileTypeGrass0]
 	rand.Seed(time.Now().UnixNano())
 	r := rand.Intn(len(tiles))
 
-	helpers.UpdateTile(w, enums.TileTypeDirt0, enums.TileTypeGrass0, r, gmComp)
+	helpers.UpdateTile(w, enums.TileTypeGrass0, enums.TileTypeGrass0, r, gmComp)
 }
 
 func (n *Nature) Draw(w engine.World, screen *ebiten.Image) {

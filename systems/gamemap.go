@@ -72,7 +72,7 @@ func (gm *GameMap) Draw(w engine.World, screen *ebiten.Image) {
 			return
 		}
 
-		op.GeoM.Translate(float64(pos.X*assets.CellSize), float64(pos.Y*assets.CellSize))
+		op.GeoM.Translate(float64(pos.X*assets.TileSize), float64(pos.Y*assets.TileSize))
 		gmComp.OffScreen.DrawImage(spr.Image, op)
 	})
 
@@ -154,7 +154,7 @@ func (gm *GameMap) Draw(w engine.World, screen *ebiten.Image) {
 func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 	// Setup world tiles
 	for z := 1; z <= assets.WorldLevels; z++ {
-		g := paths.NewGrid(assets.WorldWidth, assets.WorldHeight, assets.CellSize, assets.CellSize)
+		g := paths.NewGrid(assets.WorldWidth, assets.WorldHeight, assets.TileSize, assets.TileSize)
 		for x := 0; x < assets.WorldWidth; x++ {
 			for y := 0; y < assets.WorldHeight; y++ {
 				c := g.Get(x, y)
@@ -167,8 +167,8 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 				}
 
 				if z == 5 {
-					t.TileType = components.NewTileType(enums.TileTypeDirt0)
-					t.Image = assets.Images[enums.TileTypeDirt0]
+					t.TileType = components.NewTileType(enums.TileTypeGrass0)
+					t.Image = assets.OpaqueImages[enums.TileTypeGrass0]
 				} else if z < 5 {
 					t.TileType = components.NewTileType(enums.TileTypeRock)
 					// t.Image = assets.Images["rock"]
@@ -188,7 +188,7 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 	// Setup resource tiles
 	rand.Seed(time.Now().UnixNano())
 
-	for _, tile := range gms.TilesByType[enums.TileTypeDirt0] {
+	for _, tile := range gms.TilesByType[enums.TileTypeGrass0] {
 		if rand.Intn(100) < 5 {
 			g := gms.Grids[tile.Z]
 			c := g.Get(tile.X, tile.Y)
@@ -199,7 +199,7 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 				components.Sprite
 			}{
 				Position: components.NewPosition(tile.X, tile.Y, tile.Z),
-				Sprite:   components.NewSprite(assets.Images[enums.TileTypeTree0]),
+				Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeTree0]),
 			}
 
 			gms.ResourcesByZ[tile.Z] = append(gms.ResourcesByZ[tile.Z], t)
@@ -208,10 +208,10 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 
 	for z := 0; z < assets.WorldLevels; z++ {
 		// Tiles
-		tmImage := ebiten.NewImage(assets.WorldWidth*assets.CellSize, assets.WorldHeight*assets.CellSize)
+		tmImage := ebiten.NewImage(assets.WorldWidth*assets.TileSize, assets.WorldHeight*assets.TileSize)
 		for _, t := range gms.TilesByZ[z] {
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(t.X*assets.CellSize), float64(t.Y*assets.CellSize))
+			op.GeoM.Translate(float64(t.X*assets.TileSize), float64(t.Y*assets.TileSize))
 
 			if t.Image != nil {
 				tmImage.DrawImage(t.Image, op)
