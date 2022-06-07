@@ -1,7 +1,10 @@
 package scenes
 
 import (
+	"log"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/sedyh/mizu/pkg/engine"
 	"github.com/tomknightdev/dwarven-fortresses/assets"
 	"github.com/tomknightdev/dwarven-fortresses/components"
@@ -93,6 +96,7 @@ func (g *Game) Setup(w engine.World) {
 	})
 
 	setupGui(w)
+	setupAudio()
 }
 
 func setupGui(w engine.World) {
@@ -112,4 +116,18 @@ func setupGui(w engine.World) {
 		Gui:    components.NewGui(10, 350, 3.0, enums.GuiActionStockpile),
 		Sprite: components.NewSprite(assets.Images[enums.TileTypeStockpile]),
 	})
+}
+
+func setupAudio() {
+	audioContext := audio.NewContext(44100)
+
+	p, err := audioContext.NewPlayer(assets.MainAudio)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// TODO Be able to set the volume in the settings
+	p.SetVolume(0.2)
+
+	p.Play()
 }
