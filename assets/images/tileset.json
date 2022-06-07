@@ -33,7 +33,7 @@
         "y": 11
       },
       {
-        "name": "rock",
+        "name": "rockwallhorizontal",
         "id": 3,
         "opaqueFileName": "tiny_dungeon_world.png",
         "transparentFileName": "tiny_dungeon_world.png",
@@ -191,6 +191,14 @@
         "transparentFileName": "tiny_dungeon_items.png",
         "x": 4,
         "y": 4
+      },
+      {
+        "name": "rockwallvertical",
+        "id": 23,
+        "opaqueFileName": "tiny_dungeon_world.png",
+        "transparentFileName": "tiny_dungeon_world.png",
+        "x": 6,
+        "y": 0
       }
   ]
 }

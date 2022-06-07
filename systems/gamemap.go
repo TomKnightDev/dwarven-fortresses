@@ -170,7 +170,7 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 					t.TileType = components.NewTileType(enums.TileTypeGrass0)
 					t.Image = assets.OpaqueImages[enums.TileTypeGrass0]
 				} else if z < 5 {
-					t.TileType = components.NewTileType(enums.TileTypeRock)
+					t.TileType = components.NewTileType(enums.TileTypeRockWallHz)
 					// t.Image = assets.Images["rock"]
 					c.Walkable = false
 				} else {

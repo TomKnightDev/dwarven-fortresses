@@ -73,14 +73,14 @@ func (t *Task) Update(w engine.World) {
 				})
 				gmComp.TilesByType[enums.TileTypeStairDown] = append(gmComp.TilesByType[enums.TileTypeStairDown], pos)
 
-				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z-1), gmComp.TilesByType[enums.TileTypeRock])
+				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z-1), gmComp.TilesByType[enums.TileTypeRockWallHz])
 				if err != nil {
 					log.Println(err)
 					entitiesToRemove = append(entitiesToRemove, e)
 					continue
 				}
 
-				helpers.UpdateTile(w, enums.TileTypeRock, enums.TileTypeRockFloor, index, gmComp)
+				helpers.UpdateTile(w, enums.TileTypeRockWallHz, enums.TileTypeRockFloor, index, gmComp)
 
 				w.AddEntities(&entities.Building{
 					Position: components.NewPosition(pos.X, pos.Y, pos.Z-1),
@@ -91,15 +91,20 @@ func (t *Task) Update(w engine.World) {
 				gmComp.TilesByType[enums.TileTypeStairUp] = append(gmComp.TilesByType[enums.TileTypeStairUp], components.NewPosition(pos.X, pos.Y, pos.Z-1))
 
 			case enums.TaskTypeMine:
-				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z),
-					gmComp.TilesByType[enums.TileTypeRock])
+				tileType := enums.TileTypeRockWallHz
+				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z), gmComp.TilesByType[enums.TileTypeRockWallHz])
 				if err != nil {
-					log.Println(err)
-					entitiesToRemove = append(entitiesToRemove, e)
-					continue
+					tileType = enums.TileTypeRockWallVt
+					index, err = helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z), gmComp.TilesByType[enums.TileTypeRockWallVt])
+
+					if err != nil {
+						log.Println(err)
+						entitiesToRemove = append(entitiesToRemove, e)
+						continue
+					}
 				}
 
-				helpers.UpdateTile(w, enums.TileTypeRock, enums.TileTypeRockFloor, index, gmComp)
+				helpers.UpdateTile(w, tileType, enums.TileTypeRockFloor, index, gmComp)
 
 				for i := 0; i < 1; i++ {
 					w.AddEntities(&entities.Item{

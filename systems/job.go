@@ -52,10 +52,13 @@ func (j *Job) Update(w engine.World) {
 			gms.Get(&gmComp)
 
 			for _, st := range inputSingleton.LeftClickedTiles {
-				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(st.X, st.Y, st.Z), gmComp.TilesByType[enums.TileTypeRock])
+				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(st.X, st.Y, st.Z), gmComp.TilesByType[enums.TileTypeRockWallHz])
 				if err != nil {
-					log.Println(err)
-					continue
+					index, err = helpers.GetTileByTypeIndexFromPos(components.NewPosition(st.X, st.Y, st.Z), gmComp.TilesByType[enums.TileTypeRockWallVt])
+					if err != nil {
+						log.Println(err)
+						continue
+					}
 				}
 
 				if index < 0 {

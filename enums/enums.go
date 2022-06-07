@@ -13,7 +13,7 @@ const (
 	TileTypeEmpty TileTypeEnum = iota
 	TileTypeCursor
 	TileTypeStockpile
-	TileTypeRock
+	TileTypeRockWallHz
 	TileTypeRockFloor
 	TileTypeRocks
 	TileTypeDirt0
@@ -33,6 +33,7 @@ const (
 	TileTypeStairDown
 	TileTypeStairUp
 	TileTypePickaxe
+	TileTypeRockWallVt
 )
 
 const (

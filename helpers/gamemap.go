@@ -94,19 +94,16 @@ func UpdateTile(w engine.World, fromTileType, newTileType enums.TileTypeEnum, ti
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(tile.X*assets.TileSize), float64(tile.Y*assets.TileSize))
 
+			tmSprite.Image.DrawImage(assets.OpaqueImages[newTileType], op)
+
 			switch newTileType {
 			case enums.TileTypeGrass0:
-				// r := rand.Intn(3)
-				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeGrass0], op)
 				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
 				cell.Walkable = true
 			case enums.TileTypeRockFloor:
-				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeRockFloor], op)
 				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
 				cell.Walkable = true
 				updateAdjacentTiles(w, gmComp, tile, enums.TileTypeRockFloor)
-			case enums.TileTypeRock:
-				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeRock], op)
 			}
 			// Update maps
 			if fromTileType != newTileType {
@@ -137,11 +134,33 @@ func updateAdjacentTiles(w engine.World, gmComp *components.GameMapSingleton, ti
 			}
 
 			if centreTileType == enums.TileTypeRockFloor {
-				index, err := GetTileByTypeIndexFromPos(currentTile, gmComp.TilesByType[enums.TileTypeRock])
+				index, err := GetTileByTypeIndexFromPos(currentTile, gmComp.TilesByType[enums.TileTypeRockWallHz])
 				if err != nil {
-					log.Printf("failed to find index for %v at %v\n", enums.TileTypeRock, currentTile)
+					index, err = GetTileByTypeIndexFromPos(currentTile, gmComp.TilesByType[enums.TileTypeRockWallVt])
+					if err != nil {
+						log.Printf("failed to find index for %v at %v\n", enums.TileTypeRockWallHz, currentTile)
+					}
 				}
-				UpdateTile(w, enums.TileTypeRock, enums.TileTypeRock, index, gmComp)
+
+				// If the tile above or below this one is a floor tile then this tile should be a horizontal one
+				isFloor := false
+				_, err = GetTileByTypeIndexFromPos(components.NewPosition(currentTile.X, currentTile.Y-1, currentTile.Z), gmComp.TilesByType[enums.TileTypeRockFloor])
+				if err == nil {
+					isFloor = true
+				} else {
+					_, err := GetTileByTypeIndexFromPos(components.NewPosition(currentTile.X, currentTile.Y+1, currentTile.Z), gmComp.TilesByType[enums.TileTypeRockFloor])
+					if err == nil {
+						isFloor = true
+					}
+				}
+
+				if isFloor {
+					UpdateTile(w, enums.TileTypeRockWallHz, enums.TileTypeRockWallHz, index, gmComp)
+				} else {
+					UpdateTile(w, enums.TileTypeRockWallHz, enums.TileTypeRockWallVt, index, gmComp)
+				}
+			} else {
+				log.Println("not handled")
 			}
 		}
 	}
