@@ -29,29 +29,29 @@ const (
 var (
 	CellSize int
 
-	Tileset      []byte
-	TilesetImage *ebiten.Image
+	// TilesetFileNames []string
 
-	TransTileset      []byte
-	TransTilesetImage *ebiten.Image
+	// Tileset       []byte
+	TilesetImages = make(map[string]*ebiten.Image)
 
-	Images      = make(map[enums.TileTypeEnum]*ebiten.Image)
-	TransImages = make(map[enums.TileTypeEnum]*ebiten.Image)
+	OpaqueImages = make(map[enums.TileTypeEnum]*ebiten.Image)
+	TransImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
 )
 
 type TilesetDefinition struct {
-	TilesetName                string `json:"tilesetName"`
-	TilesetFileName            string `json:"tilesetFileName"`
-	TransparentTilesetFileName string `json:"transparentTilesetFileName"`
-	TileSize                   int    `json:"tileSize"`
-	Tiles                      []Tile `json:"tiles"`
+	TilesetName      string   `json:"tilesetName"`
+	TilesetFileNames []string `json:"tilesetFileNames"`
+	TileSize         int      `json:"tileSize"`
+	Tiles            []Tile   `json:"tiles"`
 }
 
 type Tile struct {
-	Name string `json:"name"`
-	Id   int    `json:"id`
-	X    int    `json:"x"`
-	Y    int    `json:"y"`
+	Name                string `json:"name"`
+	Id                  int    `json:"id`
+	OpaqueFileName      string `json:"opaqueFileName"`
+	TransparentFileName string `json:"transparentFileName"`
+	X                   int    `json:"x"`
+	Y                   int    `json:"y"`
 }
 
 func init() {
@@ -73,43 +73,45 @@ func init() {
 		log.Fatal(err)
 	}
 
-	// Read tile sets from definition
-	abs, err = filepath.Abs("./assets/images/" + tilesetDef.TilesetFileName)
-	if err == nil {
-		fmt.Println("Absolute:", abs)
+	for _, ts := range tilesetDef.TilesetFileNames {
+		// Read tile sets from definition
+		abs, err = filepath.Abs("./assets/images/" + ts)
+		if err == nil {
+			fmt.Println("Absolute:", abs)
+		}
+
+		tileset, err := os.ReadFile(abs)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		img, err := png.Decode(bytes.NewReader(tileset))
+		if err != nil {
+			log.Fatal(err)
+		}
+		TilesetImages[ts] = ebiten.NewImageFromImage(img)
 	}
 
-	Tileset, err := os.ReadFile(abs)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// abs, err = filepath.Abs("./assets/images/" + tilesetDef.TransparentTilesetFileName)
+	// if err == nil {
+	// 	fmt.Println("Absolute:", abs)
+	// }
+	// TransTileset, err := os.ReadFile(abs)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	abs, err = filepath.Abs("./assets/images/" + tilesetDef.TransparentTilesetFileName)
-	if err == nil {
-		fmt.Println("Absolute:", abs)
-	}
-	TransTileset, err := os.ReadFile(abs)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	img, err := png.Decode(bytes.NewReader(Tileset))
-	if err != nil {
-		log.Fatal(err)
-	}
-	TilesetImage = ebiten.NewImageFromImage(img)
-
-	img, err = png.Decode(bytes.NewReader(TransTileset))
-	if err != nil {
-		log.Fatal(err)
-	}
-	TransTilesetImage = ebiten.NewImageFromImage(img)
+	// img, err = png.Decode(bytes.NewReader(TransTileset))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// TransTilesetImage = ebiten.NewImageFromImage(img)
 
 	CellSize = tilesetDef.TileSize
 
 	for _, t := range tilesetDef.Tiles {
-		Images[enums.TileTypeEnum(t.Id)] = TilesetImage.SubImage(image.Rect(t.X*CellSize, t.Y*CellSize, (t.X+1)*CellSize, (t.Y+1)*CellSize)).(*ebiten.Image)
-		TransImages[enums.TileTypeEnum(t.Id)] = TransTilesetImage.SubImage(image.Rect(t.X*CellSize, t.Y*CellSize, (t.X+1)*CellSize, (t.Y+1)*CellSize)).(*ebiten.Image)
+		OpaqueImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.OpaqueFileName].SubImage(image.Rect(t.X*CellSize, t.Y*CellSize, (t.X+1)*CellSize, (t.Y+1)*CellSize)).(*ebiten.Image)
+		TransImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.TransparentFileName].SubImage(image.Rect(t.X*CellSize, t.Y*CellSize, (t.X+1)*CellSize, (t.Y+1)*CellSize)).(*ebiten.Image)
 	}
 
 	// Images["empty"] = TransTilesetImage.SubImage(image.Rect(0*CellSize, 0*CellSize, 1*CellSize, 1*CellSize)).(*ebiten.Image)

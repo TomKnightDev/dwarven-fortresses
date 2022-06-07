@@ -97,16 +97,16 @@ func UpdateTile(w engine.World, fromTileType, newTileType enums.TileTypeEnum, ti
 			switch newTileType {
 			case enums.TileTypeGrass0:
 				// r := rand.Intn(3)
-				tmSprite.Image.DrawImage(assets.Images[enums.TileTypeGrass0], op)
+				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeGrass0], op)
 				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
 				cell.Walkable = true
 			case enums.TileTypeRockFloor:
-				tmSprite.Image.DrawImage(assets.Images[enums.TileTypeRockFloor], op)
+				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeRockFloor], op)
 				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
 				cell.Walkable = true
 				updateAdjacentTiles(w, gmComp, tile, enums.TileTypeRockFloor)
 			case enums.TileTypeRock:
-				tmSprite.Image.DrawImage(assets.Images[enums.TileTypeRock], op)
+				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeRock], op)
 			}
 			// Update maps
 			if fromTileType != newTileType {

@@ -168,7 +168,7 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 
 				if z == 5 {
 					t.TileType = components.NewTileType(enums.TileTypeDirt0)
-					t.Image = assets.Images[enums.TileTypeDirt0]
+					t.Image = assets.OpaqueImages[enums.TileTypeDirt0]
 				} else if z < 5 {
 					t.TileType = components.NewTileType(enums.TileTypeRock)
 					// t.Image = assets.Images["rock"]
@@ -199,7 +199,7 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 				components.Sprite
 			}{
 				Position: components.NewPosition(tile.X, tile.Y, tile.Z),
-				Sprite:   components.NewSprite(assets.Images[enums.TileTypeTree0]),
+				Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeTree0]),
 			}
 
 			gms.ResourcesByZ[tile.Z] = append(gms.ResourcesByZ[tile.Z], t)

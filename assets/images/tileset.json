@@ -1,144 +1,192 @@
 {
   "tilesetName": "Default",
-  "tilesetFileName": "map.png",
-  "transparentTilesetFileName": "trans_map.png",
+  "tilesetFileNames": [
+    "map.png",
+    "trans_map.png"
+  ],
   "tileSize": 16,
   "tiles": [
     {
       "name": "empty",
       "id": 0,
+      "opaqueFileName": "map.png",
+      "transparentFileName": "trans_map.png",
       "x": 0,
       "y": 0
     },
     {
         "name": "cursor",
         "id": 1,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 28,
         "y": 14
       },
       {
         "name": "stockpile",
         "id": 2,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 29,
         "y": 14
       },
       {
         "name": "rock",
         "id": 3,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 19,
         "y": 1
       },
       {
         "name": "rockfloor",
         "id": 4,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 2,
         "y": 0
       },
       {
         "name": "rocks",
         "id": 5,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 5,
         "y": 2
       },
       {
         "name": "dirt0",
         "id": 6,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 0,
         "y": 0
       },
       {
         "name": "dirt1",
         "id": 7,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 1,
         "y": 0
       },
       {
         "name": "grass0",
         "id": 8,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 5,
         "y": 0
       },
       {
         "name": "grass1",
         "id": 9,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 6,
         "y": 0
       },
       {
         "name": "grass2",
         "id": 10,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 7,
         "y": 0
       },
       {
         "name": "tree0",
         "id": 11,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 0,
         "y": 1
       },
       {
         "name": "tree1",
         "id": 12,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 1,
         "y": 1
       },
       {
         "name": "tree2",
         "id": 13,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 2,
         "y": 1
       },
       {
         "name": "tree3",
         "id": 14,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 3,
         "y": 1
       },
       {
         "name": "tree4",
         "id": 15,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 4,
         "y": 1
       },
       {
         "name": "tree5",
         "id": 16,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 5,
         "y": 1
       },
       {
         "name": "log0",
         "id": 17,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 20,
         "y": 6
       },
       {
         "name": "water",
         "id": 18,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 14,
         "y": 5
       },
       {
         "name": "dwarf",
         "id": 19,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 25,
         "y": 0
       },
       {
         "name": "stairdown",
         "id": 20,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 3,
         "y": 6
       },
       {
         "name": "stairup",
         "id": 21,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 2,
         "y": 6
       },
       {
         "name": "pickaxe",
         "id": 22,
+        "opaqueFileName": "map.png",
+        "transparentFileName": "trans_map.png",
         "x": 11,
         "y": 27
       }

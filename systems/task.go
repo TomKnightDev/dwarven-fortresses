@@ -67,7 +67,7 @@ func (t *Task) Update(w engine.World) {
 			case enums.TaskTypeBuild:
 				w.AddEntities(&entities.Building{
 					Position: pos,
-					Sprite:   components.NewSprite(assets.Images[enums.TileTypeStairDown]),
+					Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeStairDown]),
 					TileType: components.NewTileType(enums.TileTypeStairDown),
 					Building: components.NewBuilding(),
 				})
@@ -84,7 +84,7 @@ func (t *Task) Update(w engine.World) {
 
 				w.AddEntities(&entities.Building{
 					Position: components.NewPosition(pos.X, pos.Y, pos.Z-1),
-					Sprite:   components.NewSprite(assets.Images[enums.TileTypeStairUp]),
+					Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeStairUp]),
 					TileType: components.NewTileType(enums.TileTypeStairUp),
 					Building: components.NewBuilding(),
 				})
