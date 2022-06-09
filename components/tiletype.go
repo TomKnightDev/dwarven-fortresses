@@ -4,10 +4,12 @@ import "github.com/tomknightdev/dwarven-fortresses/enums"
 
 type TileType struct {
 	enums.TileTypeEnum
+	enums.TileSpriteEnum
 }
 
-func NewTileType(ttv enums.TileTypeEnum) TileType {
+func NewTileType(tt enums.TileTypeEnum, ts enums.TileSpriteEnum) TileType {
 	return TileType{
-		TileTypeEnum: ttv,
+		TileTypeEnum:   tt,
+		TileSpriteEnum: ts,
 	}
 }

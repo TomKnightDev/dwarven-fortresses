@@ -58,7 +58,7 @@ func (t *Task) Update(w engine.World) {
 				for i := 0; i < drop.DropCount; i++ {
 					w.AddEntities(&entities.Item{
 						Position: pos,
-						Sprite:   components.NewSprite(assets.TransImages[enums.TileTypeLog0]),
+						Sprite:   components.NewSprite(assets.TransImages[enums.TileSpriteLog0]),
 						Item:     components.NewItem(true, 25, enums.ItemTypeLog),
 					})
 				}
@@ -67,44 +67,44 @@ func (t *Task) Update(w engine.World) {
 			case enums.TaskTypeBuild:
 				w.AddEntities(&entities.Building{
 					Position: pos,
-					Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeStairDown]),
-					TileType: components.NewTileType(enums.TileTypeStairDown),
+					Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileSpriteStairDown]),
+					TileType: components.NewTileType(enums.TileSpriteStairDown),
 					Building: components.NewBuilding(),
 				})
-				gmComp.TilesByType[enums.TileTypeStairDown] = append(gmComp.TilesByType[enums.TileTypeStairDown], pos)
+				gmComp.TilesByType[enums.TileSpriteStairDown] = append(gmComp.TilesByType[enums.TileSpriteStairDown], pos)
 
-				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z-1), gmComp.TilesByType[enums.TileTypeRock])
+				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z-1), gmComp.TilesByType[enums.TileSpriteRock])
 				if err != nil {
 					log.Println(err)
 					entitiesToRemove = append(entitiesToRemove, e)
 					continue
 				}
 
-				helpers.UpdateTile(w, enums.TileTypeRock, enums.TileTypeRockFloor, index, gmComp)
+				helpers.UpdateTile(w, enums.TileSpriteRock, enums.TileSpriteRockFloor, index, gmComp)
 
 				w.AddEntities(&entities.Building{
 					Position: components.NewPosition(pos.X, pos.Y, pos.Z-1),
-					Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeStairUp]),
-					TileType: components.NewTileType(enums.TileTypeStairUp),
+					Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileSpriteStairUp]),
+					TileType: components.NewTileType(enums.TileSpriteStairUp),
 					Building: components.NewBuilding(),
 				})
-				gmComp.TilesByType[enums.TileTypeStairUp] = append(gmComp.TilesByType[enums.TileTypeStairUp], components.NewPosition(pos.X, pos.Y, pos.Z-1))
+				gmComp.TilesByType[enums.TileSpriteStairUp] = append(gmComp.TilesByType[enums.TileSpriteStairUp], components.NewPosition(pos.X, pos.Y, pos.Z-1))
 
 			case enums.TaskTypeMine:
 				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z),
-					gmComp.TilesByType[enums.TileTypeRock])
+					gmComp.TilesByType[enums.TileSpriteRock])
 				if err != nil {
 					log.Println(err)
 					entitiesToRemove = append(entitiesToRemove, e)
 					continue
 				}
 
-				helpers.UpdateTile(w, enums.TileTypeRock, enums.TileTypeRockFloor, index, gmComp)
+				helpers.UpdateTile(w, enums.TileSpriteRock, enums.TileSpriteRockFloor, index, gmComp)
 
 				for i := 0; i < 1; i++ {
 					w.AddEntities(&entities.Item{
 						Position: pos,
-						Sprite:   components.NewSprite(assets.TransImages[enums.TileTypeRocks]),
+						Sprite:   components.NewSprite(assets.TransImages[enums.TileSpriteRocks]),
 						Item:     components.NewItem(true, 25, enums.ItemTypeStone),
 					})
 				}

@@ -1,8 +1,6 @@
 package systems
 
 import (
-	"log"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/sedyh/mizu/pkg/engine"
 	"github.com/tomknightdev/dwarven-fortresses/assets"
@@ -52,13 +50,8 @@ func (j *Job) Update(w engine.World) {
 			gms.Get(&gmComp)
 
 			for _, st := range inputSingleton.LeftClickedTiles {
-				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(st.X, st.Y, st.Z), gmComp.TilesByType[enums.TileTypeRock])
-				if err != nil {
-					log.Println(err)
-					continue
-				}
-
-				if index < 0 {
+				t := gmComp.Tiles[components.NewPosition(st.X, st.Y, st.Z)]
+				if t.TileTypeEnum != enums.TileTypeRock {
 					continue
 				}
 
@@ -127,7 +120,7 @@ func (j *Job) Draw(w engine.World, screen *ebiten.Image) {
 		e.Get(&t)
 
 		for _, task := range t.Tasks {
-			helpers.DrawImage(w, screen, task.Position, assets.TransImages[enums.TileTypeCursor])
+			helpers.DrawImage(w, screen, task.Position, assets.TransImages[enums.TileSpriteCursor])
 		}
 	})
 

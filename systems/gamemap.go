@@ -87,71 +87,6 @@ func (gm *GameMap) Draw(w engine.World, screen *ebiten.Image) {
 	gmComp.OffScreen.Clear()
 }
 
-// func UpdateTile(w engine.World, fromTileType, newTileType enums.TileTypeEnum, tileByTypeIndex int, gmComp *components.GameMapSingleton) {
-// 	tile := gmComp.TilesByType[fromTileType][tileByTypeIndex]
-// 	tileMap := w.View(components.TileMap{}, components.Sprite{}, components.Position{}).Filter()
-// 	rand.Seed(time.Now().UnixNano())
-
-// 	for _, tm := range tileMap {
-// 		var tmPos *components.Position
-// 		var tmSprite *components.Sprite
-
-// 		tm.Get(&tmPos, &tmSprite)
-// 		if tmPos.Z == tile.Z {
-// 			op := &ebiten.DrawImageOptions{}
-// 			op.GeoM.Translate(float64(tile.X*assets.CellSize), float64(tile.Y*assets.CellSize))
-
-// 			switch newTileType {
-// 			case enums.TileTypeGrass:
-// 				r := rand.Intn(3)
-// 				tmSprite.Image.DrawImage(assets.Images[fmt.Sprintf("grass%d", r)], op)
-// 			case enums.TileTypeRockFloor:
-// 				tmSprite.Image.DrawImage(assets.Images["rockfloor"], op)
-// 				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
-// 				cell.Walkable = true
-// 				updateAdjacentTiles(w, gmComp, tile, enums.TileTypeRockFloor)
-// 			case enums.TileTypeRock:
-// 				tmSprite.Image.DrawImage(assets.Images["rock"], op)
-// 			}
-// 			// Update maps
-// 			if fromTileType != newTileType {
-// 				gmComp.TilesByType[fromTileType] = append(gmComp.TilesByType[fromTileType][:tileByTypeIndex], gmComp.TilesByType[fromTileType][tileByTypeIndex+1:]...)
-// 				gmComp.TilesByType[newTileType] = append(gmComp.TilesByType[newTileType], tile)
-// 			}
-// 			break
-// 		}
-// 	}
-// }
-
-// func updateAdjacentTiles(w engine.World, gmComp *components.GameMapSingleton, tile components.Position, centreTileType enums.TileTypeEnum) {
-// 	for x := -1; x <= 1; x++ {
-// 		for y := -1; y <= 1; y++ {
-// 			if x == 0 && y == 0 {
-// 				continue
-// 			}
-
-// 			currentTile := components.NewPosition(tile.X+x, tile.Y+y, tile.Z)
-
-// 			if currentTile.X < 0 || currentTile.Y < 0 {
-// 				continue
-// 			}
-
-// 			cell := gmComp.Grids[currentTile.Z].Get(currentTile.X, currentTile.Y)
-// 			if cell.Walkable {
-// 				continue
-// 			}
-
-// 			if centreTileType == enums.TileTypeRockFloor {
-// 				index, err := helpers.GetTileByTypeIndexFromPos(currentTile, gmComp.TilesByType[enums.TileTypeRock])
-// 				if err != nil {
-// 					log.Printf("failed to find index for %v at %v\n", enums.TileTypeRock, currentTile)
-// 				}
-// 				UpdateTile(w, enums.TileTypeRock, enums.TileTypeRock, index, gmComp)
-// 			}
-// 		}
-// 	}
-// }
-
 func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 	// Setup world tiles
 	for z := 1; z <= assets.WorldLevels; z++ {
@@ -159,28 +94,23 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 		for x := 0; x < assets.WorldWidth; x++ {
 			for y := 0; y < assets.WorldHeight; y++ {
 				c := g.Get(x, y)
-				t := struct {
-					components.Position
-					components.TileType
-					components.Sprite
-				}{
+				t := components.TileInfo{
 					Position: components.NewPosition(x, y, z),
 				}
 
 				if z == 5 {
-					t.TileType = components.NewTileType(enums.TileTypeGrass0)
-					t.Image = assets.OpaqueImages[enums.TileTypeGrass0]
+					t.TileType = components.NewTileType(enums.TileTypeTerrain, enums.TileSpriteGrass0)
+					t.Image = assets.OpaqueImages[enums.TileSpriteGrass0]
 				} else if z < 5 {
-					t.TileType = components.NewTileType(enums.TileTypeRock)
+					t.TileType = components.NewTileType(enums.TileTypeRock, enums.TileSpriteRock)
 					// t.Image = assets.Images["rock"]
 					c.Walkable = false
 				} else {
-					t.TileType = components.NewTileType(enums.TileTypeEmpty)
+					t.TileType = components.NewTileType(enums.TileTypeRock, enums.TileSpriteEmpty)
 					c.Walkable = false
 				}
 
-				gms.TilesByZ[z] = append(gms.TilesByZ[z], t)
-				gms.TilesByType[t.TileTypeEnum] = append(gms.TilesByType[t.TileTypeEnum], t.Position)
+				gms.Tiles[t.Position] = t
 			}
 		}
 		gms.Grids[z] = g
@@ -195,34 +125,39 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 	wG.Lacunarity = 2.0
 	wG.Persistance = 0.1
 
-	for _, tile := range gms.TilesByType[enums.TileTypeGrass0] {
-		var resourceType enums.TileTypeEnum
+	for _, tile := range gms.Tiles {
+		if tile.TileSpriteEnum != enums.TileSpriteGrass0 {
+			continue
+		}
+
+		var resourceType enums.TileSpriteEnum
 		resourceSeed := wG.GenerateXYTile(tile.X, tile.Y)
 		switch int(resourceSeed) {
 		case 0:
 			continue
 		case 1:
-			resourceType = enums.TileTypeTree0
+			resourceType = enums.TileSpriteTree0
 		}
 		g := gms.Grids[tile.Z]
 		c := g.Get(tile.X, tile.Y)
 		c.Walkable = false
 
-		t := struct {
-			components.Position
-			components.Sprite
-		}{
+		t := components.TileInfo{
 			Position: components.NewPosition(tile.X, tile.Y, tile.Z),
+			TileType: components.NewTileType(enums.TileTypeResource, enums.TileSpriteTree0),
 			Sprite:   components.NewSprite(assets.OpaqueImages[resourceType]),
 		}
 
-		gms.ResourcesByZ[tile.Z] = append(gms.ResourcesByZ[tile.Z], t)
+		gms.Resources[tile.Position] = append(gms.Resources[tile.Position], t)
 	}
 
 	for z := 0; z < assets.WorldLevels; z++ {
 		// Tiles
 		tmImage := ebiten.NewImage(assets.WorldWidth*assets.TileSize, assets.WorldHeight*assets.TileSize)
-		for _, t := range gms.TilesByZ[z] {
+		for _, t := range gms.Tiles {
+			if t.Z != z {
+				continue
+			}
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(t.X*assets.TileSize), float64(t.Y*assets.TileSize))
 
@@ -237,15 +172,21 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 		})
 
 		// Resources
-		for _, r := range gms.ResourcesByZ[z] {
-			w.AddEntities(&entities.Tree{
-				Sprite:    r.Sprite,
-				Position:  r.Position,
-				Resource:  components.NewResource(),
-				Choppable: components.NewChoppable(),
-				Drops:     components.NewDrops(enums.DropTypeLog, 3),
-				Nature:    components.NewNature(),
-			})
+		for _, r := range gms.Resources {
+			for _, ti := range r {
+				if ti.Z != z {
+					continue
+				}
+
+				w.AddEntities(&entities.Tree{
+					Sprite:    ti.Sprite,
+					Position:  ti.Position,
+					Resource:  components.NewResource(),
+					Choppable: components.NewChoppable(),
+					Drops:     components.NewDrops(enums.DropTypeLog, 3),
+					Nature:    components.NewNature(),
+				})
+			}
 		}
 	}
 }

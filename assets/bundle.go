@@ -31,8 +31,8 @@ const (
 var (
 	TileSize      int
 	TilesetImages = make(map[string]*ebiten.Image)
-	OpaqueImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
-	TransImages   = make(map[enums.TileTypeEnum]*ebiten.Image)
+	OpaqueImages  = make(map[enums.TileSpriteEnum]*ebiten.Image)
+	TransImages   = make(map[enums.TileSpriteEnum]*ebiten.Image)
 	MainAudio     *mp3.Stream
 )
 
@@ -98,8 +98,8 @@ func LoadImages() {
 	TileSize = tilesetDef.TileSize
 
 	for _, t := range tilesetDef.Tiles {
-		OpaqueImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.OpaqueFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
-		TransImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.TransparentFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
+		OpaqueImages[enums.TileSpriteEnum(t.Id)] = TilesetImages[t.OpaqueFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
+		TransImages[enums.TileSpriteEnum(t.Id)] = TilesetImages[t.TransparentFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
 	}
 
 }

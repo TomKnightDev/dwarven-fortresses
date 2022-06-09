@@ -34,7 +34,7 @@ func (d *Designations) Update(w engine.World) {
 				w.AddEntities(&entities.Stockpile{
 					Designation: components.NewDesignation(enums.DesignationTypeStockpile),
 					Position:    st,
-					Sprite:      components.NewSprite(assets.TransImages[enums.TileTypeStockpile]),
+					Sprite:      components.NewSprite(assets.TransImages[enums.TileSpriteStockpile]),
 					Inventory:   components.NewInventory(),
 				})
 			}

@@ -153,7 +153,7 @@ func (p *Pathfinder) Update(w engine.World) {
 	}))
 }
 
-func (p Pathfinder) GetPath(startPos components.Position, endPos components.Position, grids map[int]*paths.Grid, tileByType map[enums.TileTypeEnum][]components.Position) []components.Path {
+func (p Pathfinder) GetPath(startPos components.Position, endPos components.Position, grids map[int]*paths.Grid, tileByType map[enums.TileSpriteEnum][]components.Position) []components.Path {
 	if startPos.Z == endPos.Z {
 		path := grids[endPos.Z].GetPath(float64(startPos.X*assets.TileSize), float64(startPos.Y*assets.TileSize), float64(endPos.X*assets.TileSize), float64(endPos.Y*assets.TileSize), true, false)
 
@@ -171,8 +171,8 @@ func (p Pathfinder) GetPath(startPos components.Position, endPos components.Posi
 	// true = down, false = up
 	travTiles := make(map[bool][]components.Position)
 
-	travTiles[false] = append(travTiles[false], tileByType[enums.TileTypeStairUp]...)
-	travTiles[true] = append(travTiles[true], tileByType[enums.TileTypeStairDown]...)
+	travTiles[false] = append(travTiles[false], tileByType[enums.TileSpriteStairUp]...)
+	travTiles[true] = append(travTiles[true], tileByType[enums.TileSpriteStairDown]...)
 
 	direction := true
 	if endPos.Z > startPos.Z {

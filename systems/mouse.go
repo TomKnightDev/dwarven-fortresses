@@ -140,17 +140,17 @@ func (m *Mouse) Draw(w engine.World, screen *ebiten.Image) {
 
 	switch inputSingleton.InputMode {
 	case enums.InputModeNone:
-		mouseSprite.Image = assets.OpaqueImages[enums.TileTypeEmpty]
+		mouseSprite.Image = assets.OpaqueImages[enums.TileSpriteEmpty]
 	case enums.InputModeGather:
-		mouseSprite.Image = assets.OpaqueImages[enums.TileTypeCursor]
+		mouseSprite.Image = assets.OpaqueImages[enums.TileSpriteCursor]
 	case enums.InputModeBuild:
-		mouseSprite.Image = assets.OpaqueImages[enums.TileTypeStairDown]
+		mouseSprite.Image = assets.OpaqueImages[enums.TileSpriteStairDown]
 	case enums.InputModeChop:
-		mouseSprite.Image = assets.OpaqueImages[enums.TileTypeCursor]
+		mouseSprite.Image = assets.OpaqueImages[enums.TileSpriteCursor]
 	case enums.InputModeMine:
-		mouseSprite.Image = assets.OpaqueImages[enums.TileTypePickaxe]
+		mouseSprite.Image = assets.OpaqueImages[enums.TileSpritePickaxe]
 	case enums.InputModeStockpile:
-		mouseSprite.Image = assets.OpaqueImages[enums.TileTypeStockpile]
+		mouseSprite.Image = assets.OpaqueImages[enums.TileSpriteStockpile]
 	}
 
 	helpers.DrawImage(w, screen, *mousePos, mouseSprite.Image)

@@ -74,7 +74,7 @@ func (g *Game) Setup(w engine.World) {
 	for i := 0; i < assets.StartingDwarfCount; i++ {
 		w.AddEntities(&entities.Actor{
 			Position:  components.NewPosition(1, 1, 5),
-			Sprite:    components.NewSprite(assets.TransImages[enums.TileTypeDwarf]),
+			Sprite:    components.NewSprite(assets.TransImages[enums.TileSpriteDwarf]),
 			Move:      components.NewMove(1, 1, 5),
 			Worker:    components.NewWorker(),
 			Inventory: components.NewInventory(),
@@ -85,7 +85,7 @@ func (g *Game) Setup(w engine.World) {
 	cx, cy := ebiten.CursorPosition()
 	w.AddEntities(&entities.Mouse{
 		Position: components.NewPosition(cx, cy, 5),
-		Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeEmpty]),
+		Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileSpriteEmpty]),
 		Mouse:    components.NewMouse(),
 	})
 
@@ -102,19 +102,19 @@ func (g *Game) Setup(w engine.World) {
 func setupGui(w engine.World) {
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(10, 200, 3.0, enums.GuiActionStair),
-		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeStairDown]),
+		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileSpriteStairDown]),
 	})
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(10, 250, 3.0, enums.GuiActionChop),
-		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeTree0]),
+		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileSpriteTree0]),
 	})
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(10, 300, 3.0, enums.GuiActionMine),
-		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypePickaxe]),
+		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileSpritePickaxe]),
 	})
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(10, 350, 3.0, enums.GuiActionStockpile),
-		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeStockpile]),
+		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileSpriteStockpile]),
 	})
 }
 
@@ -126,7 +126,7 @@ func setupAudio() {
 		log.Fatal(err)
 	}
 
-	// TODO Be able to set the volume in the settings
+	// TODO: Be able to set the volume in the settings
 	p.SetVolume(0.2)
 
 	p.Play()

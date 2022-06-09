@@ -1,5 +1,6 @@
 package enums
 
+type TileSpriteEnum int
 type TileTypeEnum int
 type InputModeEnum int
 type GuiActionEnum int
@@ -10,29 +11,40 @@ type DesignationTypeEnum int
 type ItemTypeEnum int
 
 const (
-	TileTypeEmpty TileTypeEnum = iota
-	TileTypeCursor
-	TileTypeStockpile
+	TileSpriteEmpty TileSpriteEnum = iota
+	TileSpriteCursor
+	TileSpriteStockpile
+	TileSpriteRock
+	TileSpriteRockFloor
+	TileSpriteRocks
+	TileSpriteDirt0
+	TileSpriteDirt1
+	TileSpriteGrass0
+	TileSpriteGrass1
+	TileSpriteGrass2
+	TileSpriteTree0
+	TileSpriteTree1
+	TileSpriteTree2
+	TileSpriteTree3
+	TileSpriteTree4
+	TileSpriteTree5
+	TileSpriteLog0
+	TileSpriteWater
+	TileSpriteDwarf
+	TileSpriteStairDown
+	TileSpriteStairUp
+	TileSpritePickaxe
+)
+
+const (
+	TileTypeNone TileTypeEnum = iota
 	TileTypeRock
-	TileTypeRockFloor
-	TileTypeRocks
-	TileTypeDirt0
-	TileTypeDirt1
-	TileTypeGrass0
-	TileTypeGrass1
-	TileTypeGrass2
-	TileTypeTree0
-	TileTypeTree1
-	TileTypeTree2
-	TileTypeTree3
-	TileTypeTree4
-	TileTypeTree5
-	TileTypeLog0
-	TileTypeWater
-	TileTypeDwarf
-	TileTypeStairDown
-	TileTypeStairUp
-	TileTypePickaxe
+	TileTypeTerrain
+	TileTypeResource
+	TileTypeItem
+	TileTypeBuilding
+	TileTypeTraverseUp
+	TileTypeTraverseDown
 )
 
 const (
