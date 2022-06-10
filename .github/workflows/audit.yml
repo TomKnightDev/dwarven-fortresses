@@ -13,9 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install libs
-      run:  xcode-select --install
-
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
