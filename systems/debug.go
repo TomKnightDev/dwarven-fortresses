@@ -34,6 +34,7 @@ func (d *Debug) Draw(w engine.World, screen *ebiten.Image) {
 
 }
 
+//lint:ignore U1000 not implemented
 func showStockpileInventory(w engine.World) string {
 	ents := w.View(components.Designation{}, components.Position{}, components.Inventory{}).Filter()
 	var d *components.Designation
