@@ -11,6 +11,7 @@ import (
 	"github.com/tomknightdev/dwarven-fortresses/components"
 	"github.com/tomknightdev/dwarven-fortresses/entities"
 	"github.com/tomknightdev/dwarven-fortresses/enums"
+	"github.com/tomknightdev/dwarven-fortresses/worldgen"
 )
 
 type GameMap struct {
@@ -188,22 +189,34 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 	// Setup resource tiles
 	rand.Seed(time.Now().UnixNano())
 
+	wG := worldgen.New()
+	wG.Octaves = 5
+	wG.Scale = 5.0
+	wG.Lacunarity = 2.0
+	wG.Persistance = 0.1
+
 	for _, tile := range gms.TilesByType[enums.TileTypeGrass0] {
-		if rand.Intn(100) < 5 {
-			g := gms.Grids[tile.Z]
-			c := g.Get(tile.X, tile.Y)
-			c.Walkable = false
-
-			t := struct {
-				components.Position
-				components.Sprite
-			}{
-				Position: components.NewPosition(tile.X, tile.Y, tile.Z),
-				Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeTree0]),
-			}
-
-			gms.ResourcesByZ[tile.Z] = append(gms.ResourcesByZ[tile.Z], t)
+		var resourceType enums.TileTypeEnum
+		resourceSeed := wG.GenerateXYTile(tile.X, tile.Y)
+		switch int(resourceSeed) {
+		case 0:
+			continue
+		case 1:
+			resourceType = enums.TileTypeTree0
 		}
+		g := gms.Grids[tile.Z]
+		c := g.Get(tile.X, tile.Y)
+		c.Walkable = false
+
+		t := struct {
+			components.Position
+			components.Sprite
+		}{
+			Position: components.NewPosition(tile.X, tile.Y, tile.Z),
+			Sprite:   components.NewSprite(assets.OpaqueImages[resourceType]),
+		}
+
+		gms.ResourcesByZ[tile.Z] = append(gms.ResourcesByZ[tile.Z], t)
 	}
 
 	for z := 0; z < assets.WorldLevels; z++ {
