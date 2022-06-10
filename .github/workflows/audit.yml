@@ -9,14 +9,12 @@ on:
 jobs:
 
   audit:
-    runs-on: ubuntu-20.04
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
 
     - name: Install libs
-      run:  |
-        sudo apt install libgl1-mesa-dev
-        sudo apt install xorg-dev
+      run:  xcode-select --install
 
     - name: Set up Go
       uses: actions/setup-go@v2
