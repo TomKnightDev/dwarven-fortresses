@@ -45,7 +45,7 @@ type TilesetDefinition struct {
 
 type Tile struct {
 	Name                string `json:"name"`
-	Id                  int    `json:"id`
+	Id                  int    `json:"id"`
 	OpaqueFileName      string `json:"opaqueFileName"`
 	TransparentFileName string `json:"transparentFileName"`
 	X                   int    `json:"x"`
