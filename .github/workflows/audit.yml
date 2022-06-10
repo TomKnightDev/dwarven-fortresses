@@ -13,6 +13,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install libs
+      run: sudo apt install libx11-dev
+
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -20,6 +23,9 @@ jobs:
 
     - name: Verify dependencies
       run: go mod verify
+
+    - name: Build
+      run: go build -v ./...
 
     - name: Run go vet
       run: go vet ./...
