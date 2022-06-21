@@ -5,16 +5,18 @@ import (
 )
 
 type Gui struct {
-	X, Y   int
-	Scale  float64
-	Action enums.GuiActionEnum
+	X, Y     int
+	Position enums.GuiPositionEnum
+	Scale    float64
+	Action   enums.GuiActionEnum
 }
 
-func NewGui(x, y int, scale float64, action enums.GuiActionEnum) Gui {
+func NewGui(x, y int, position enums.GuiPositionEnum, scale float64, action enums.GuiActionEnum) Gui {
 	return Gui{
-		X:      x,
-		Y:      y,
-		Scale:  scale,
-		Action: action,
+		X:        x,
+		Y:        y,
+		Position: position,
+		Scale:    scale,
+		Action:   action,
 	}
 }

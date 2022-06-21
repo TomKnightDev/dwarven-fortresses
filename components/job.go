@@ -3,12 +3,11 @@ package components
 type Job struct {
 	Tasks       []*Task
 	ClaimedByID int
-	EntityID    int
+	EntityId    int
 }
 
-func NewJob(id int, tasks ...*Task) Job {
+func NewJob(tasks ...*Task) Job {
 	return Job{
-		EntityID: id,
-		Tasks:    tasks,
+		Tasks: tasks,
 	}
 }

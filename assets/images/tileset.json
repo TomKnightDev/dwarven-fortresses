@@ -191,6 +191,14 @@
         "transparentFileName": "tiny_dungeon_items.png",
         "x": 4,
         "y": 4
+      },
+      {
+        "name": "newgame",
+        "id":23,
+        "opaqueFileName": "tiny_dungeon_interface.png",
+        "transparentFileName": "tiny_dungeon_interface.png",
+        "x": 1,
+        "y": 6
       }
   ]
 }

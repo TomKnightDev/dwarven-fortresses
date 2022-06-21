@@ -1,10 +1,7 @@
 package helpers
 
 import (
-	"fmt"
 	"log"
-	"math/rand"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/sedyh/mizu/pkg/engine"
@@ -13,24 +10,174 @@ import (
 	"github.com/tomknightdev/dwarven-fortresses/enums"
 )
 
-func GetTileByTypeIndexFromPos(pos components.Position, tilesByType []components.Position) (int, error) {
-	for i, t := range tilesByType {
-		if t.X == pos.X && t.Y == pos.Y && t.Z == pos.Z {
-			return i, nil
+func getImageForResourceType(rt enums.ResourceTypeEnum) *ebiten.Image {
+	switch rt {
+	case enums.ResourceTypeTree:
+		return assets.OpaqueImages[enums.TileTypeTree0]
+	default:
+		log.Println("resource type not handled: ", rt)
+		return nil
+	}
+}
+
+func getImageForItemType(it enums.ItemTypeEnum) *ebiten.Image {
+	switch it {
+	case enums.ItemTypeLog:
+		return assets.OpaqueImages[enums.TileTypeLog0]
+	default:
+		log.Println("item type not handled: ", it)
+		return nil
+	}
+}
+
+func getImageForTileType(tt enums.TileTypeEnum) *ebiten.Image {
+	switch tt {
+	case enums.TileTypeStairDown:
+		return assets.OpaqueImages[enums.TileTypeStairDown]
+	case enums.TileTypeStairUp:
+		return assets.OpaqueImages[enums.TileTypeStairUp]
+	default:
+		log.Println("tile type not handled: ", tt)
+		return nil
+	}
+}
+
+func GetTileForZ(w engine.World, level int) (tiles []*components.Tile) {
+	gms := GetGameMapSingleton(w)
+	for p, t := range gms.Tiles {
+		if p.Z == level {
+			tiles = append(tiles, t)
 		}
 	}
 
-	return 0, fmt.Errorf("unable to find tile at %v", pos)
+	return tiles
 }
 
-func DrawImage(w engine.World, screen *ebiten.Image, pos components.Position, image *ebiten.Image) {
+func GetTilesForType(w engine.World, tt enums.TileTypeEnum) (tiles []*components.Tile) {
+	gms := GetGameMapSingleton(w)
+	for _, t := range gms.Tiles {
+		if t.TileTypeEnum == tt {
+			tiles = append(tiles, t)
+		}
+	}
+
+	return tiles
+}
+
+func IsTileOfType(w engine.World, pos components.Position, tt enums.TileTypeEnum) bool {
+	gms := GetGameMapSingleton(w)
+	tile := gms.Tiles[pos]
+	return tile.TileTypeEnum == tt
+}
+
+func TileHasResource(w engine.World, pos components.Position, rt enums.ResourceTypeEnum) bool {
+	gms := GetGameMapSingleton(w)
+	tile := gms.Tiles[pos]
+	for _, r := range tile.Resources {
+		if r.ResourceTypeEnum == rt {
+			return true
+		}
+	}
+
+	return false
+}
+
+func RemoveResourceFromTile(w engine.World, pos components.Position, rt enums.ResourceTypeEnum, walkable bool) {
+	gms := GetGameMapSingleton(w)
+	tile := gms.Tiles[pos]
+
+	for i, r := range tile.Resources {
+		if r.ResourceTypeEnum == rt {
+			tile.Resources = append(tile.Resources[:i], tile.Resources[i+1:]...)
+		}
+	}
+
+	cell := gms.Grids[pos.Z].Get(pos.X, pos.Y)
+	cell.Walkable = walkable
+
+	RenderTile(w, pos)
+}
+
+func AddBuildingToTile(w engine.World, pos components.Position, tt enums.TileTypeEnum, walkable bool) {
+	gms := GetGameMapSingleton(w)
+	tile := gms.Tiles[pos]
+
+	tile.Buildings = append(tile.Buildings, components.NewBuilding(tt))
+
+	cell := gms.Grids[pos.Z].Get(pos.X, pos.Y)
+	cell.Walkable = walkable
+
+	if tt == enums.TileTypeStairDown {
+		gms.Downs = append(gms.Downs, pos)
+	} else if tt == enums.TileTypeStairUp {
+		gms.Ups = append(gms.Ups, pos)
+	}
+
+	RenderTile(w, pos)
+}
+
+func MineTile(w engine.World, pos components.Position) {
+	gms := GetGameMapSingleton(w)
+	tile := gms.Tiles[pos]
+
+	if tile.TileTypeEnum != enums.TileTypeRock {
+		return
+	}
+
+	tile.Image = assets.TransImages[enums.TileTypeRockFloor]
+	tile.TileTypeEnum = enums.TileTypeRockFloor
+
+	cell := gms.Grids[pos.Z].Get(pos.X, pos.Y)
+	cell.Walkable = true
+
+	RenderTile(w, pos)
+}
+
+func RenderTile(w engine.World, pos components.Position) {
+	gms := GetGameMapSingleton(w)
+	tile := gms.Tiles[pos]
+
+	if tile.Image == nil {
+		return
+	}
+
+	tmEnts := w.View(components.TileMap{}).Filter()
+	var sprite *components.Sprite
+	var tmpos *components.Position
+
+	for _, tmEnt := range tmEnts {
+		tmEnt.Get(&sprite, &tmpos)
+		if tmpos.Z != pos.Z {
+			continue
+		}
+
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(pos.X*assets.TileSize), float64(pos.Y*assets.TileSize))
+
+		sprite.Image.DrawImage(tile.Image, op)
+
+		for _, r := range tile.Resources {
+			sprite.Image.DrawImage(getImageForResourceType(r.ResourceTypeEnum), op)
+		}
+
+		for _, b := range tile.Buildings {
+			sprite.Image.DrawImage(getImageForTileType(b.TileTypeEnum), op)
+		}
+
+		for _, i := range tile.Items {
+			sprite.Image.DrawImage(getImageForItemType(i.ItemType), op)
+		}
+		break
+	}
+}
+
+func DrawImage(w engine.World, pos components.Position, image *ebiten.Image) {
 	camera, found := w.View(components.Zoom{}, components.Position{}).Get()
 	if !found {
 		return
 	}
-	var zoom *components.Zoom
 	var camPos *components.Position
-	camera.Get(&zoom, &camPos)
+	camera.Get(&camPos)
 
 	if pos.Z != camPos.Z {
 		return
@@ -39,233 +186,45 @@ func DrawImage(w engine.World, screen *ebiten.Image, pos components.Position, im
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(pos.X*assets.TileSize), float64(pos.Y*assets.TileSize))
 
-	op.GeoM.Scale(zoom.Value, zoom.Value)
+	// op.GeoM.Scale(zoom.Value, zoom.Value)
 
-	ww, wh := ebiten.WindowSize()
-	op.GeoM.Translate(-float64(camPos.X-(ww/2)), -float64(camPos.Y-(wh/2)))
+	// ww, wh := ebiten.WindowSize()
+	// op.GeoM.Translate(-float64(camPos.X-(ww/2)), -float64(camPos.Y-(wh/2)))
 	// op.Filter = ebiten.FilterNearest
-	screen.DrawImage(image, op)
+	rs := GetRenderSingleton(w)
+	rs.OffScreen.DrawImage(image, op)
 }
 
-func DrawImages(w engine.World, screen *ebiten.Image, offScreen *ebiten.Image, ents []engine.Entity) {
+func DrawImages(w engine.World, ents engine.View) {
+	rs := GetRenderSingleton(w)
+
 	camera, found := w.View(components.Zoom{}, components.Position{}).Get()
 	if !found {
 		return
 	}
-	var zoom *components.Zoom
+	// var zoom *components.Zoom
 	var camPos *components.Position
-	camera.Get(&zoom, &camPos)
+	camera.Get(&camPos)
 
 	var s *components.Sprite
 	var p *components.Position
-	for _, e := range ents {
+
+	ents.Each(func(e engine.Entity) {
 		e.Get(&s, &p)
 
-		if p.Z != camPos.Z {
+		if p.Z != camPos.Z || !s.Drawn {
 			return
 		}
 
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(p.X*assets.TileSize), float64(p.Y*assets.TileSize))
-		offScreen.DrawImage(s.Image, op)
-	}
-
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Scale(zoom.Value, zoom.Value)
-
-	ww, wh := ebiten.WindowSize()
-	op.GeoM.Translate(-float64(camPos.X-(ww/2)), -float64(camPos.Y-(wh/2)))
-	// op.Filter = ebiten.FilterNearest
-	screen.DrawImage(offScreen, op)
-	offScreen.Clear()
+		rs.OffScreen.DrawImage(s.Image, op)
+	})
 }
 
-func UpdateTile(w engine.World, fromTileType, newTileType enums.TileTypeEnum, tileByTypeIndex int, gmComp *components.GameMapSingleton) {
-	tile := gmComp.TilesByType[fromTileType][tileByTypeIndex]
-	tileMap := w.View(components.TileMap{}, components.Sprite{}, components.Position{}).Filter()
-	rand.Seed(time.Now().UnixNano())
-
-	for _, tm := range tileMap {
-		var tmPos *components.Position
-		var tmSprite *components.Sprite
-
-		tm.Get(&tmPos, &tmSprite)
-		if tmPos.Z == tile.Z {
-			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(tile.X*assets.TileSize), float64(tile.Y*assets.TileSize))
-
-			switch newTileType {
-			case enums.TileTypeGrass0:
-				// r := rand.Intn(3)
-				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeGrass0], op)
-				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
-				cell.Walkable = true
-			case enums.TileTypeRockFloor:
-				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeRockFloor], op)
-				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
-				cell.Walkable = true
-				updateAdjacentTiles(w, gmComp, tile, enums.TileTypeRockFloor)
-			case enums.TileTypeRock:
-				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeRock], op)
-			}
-			// Update maps
-			if fromTileType != newTileType {
-				gmComp.TilesByType[fromTileType] = append(gmComp.TilesByType[fromTileType][:tileByTypeIndex], gmComp.TilesByType[fromTileType][tileByTypeIndex+1:]...)
-				gmComp.TilesByType[newTileType] = append(gmComp.TilesByType[newTileType], tile)
-			}
-			break
-		}
-	}
-}
-
-func updateAdjacentTiles(w engine.World, gmComp *components.GameMapSingleton, tile components.Position, centreTileType enums.TileTypeEnum) {
-	for x := -1; x <= 1; x++ {
-		for y := -1; y <= 1; y++ {
-			if x == 0 && y == 0 {
-				continue
-			}
-
-			currentTile := components.NewPosition(tile.X+x, tile.Y+y, tile.Z)
-
-			if currentTile.X < 0 || currentTile.Y < 0 {
-				continue
-			}
-
-			cell := gmComp.Grids[currentTile.Z].Get(currentTile.X, currentTile.Y)
-			if cell.Walkable {
-				continue
-			}
-
-			if centreTileType == enums.TileTypeRockFloor {
-				index, err := GetTileByTypeIndexFromPos(currentTile, gmComp.TilesByType[enums.TileTypeRock])
-				if err != nil {
-					log.Printf("failed to find index for %v at %v\n", enums.TileTypeRock, currentTile)
-				}
-				UpdateTile(w, enums.TileTypeRock, enums.TileTypeRock, index, gmComp)
-			}
-		}
-	}
-}
-
-// import (
-// 	"fmt"
-// 	"log"
-// 	"math/rand"
-// 	"time"
-
-// 	"github.com/OpenSauce/paths"
-// 	"github.com/hajimehoshi/ebiten/v2"
-// 	"github.com/sedyh/mizu/pkg/engine"
-// 	"github.com/tomknightdev/dwarven-fortresses/assets"
-// 	"github.com/tomknightdev/dwarven-fortresses/components"
-// 	"github.com/tomknightdev/dwarven-fortresses/enums"
-// )
-
-// type GameMap struct {
-
-// 	World engine.World
-// }
-
-// func (gm GameMap) GetGrids() map[int]*paths.Grid {
-// 	return gm.Grids
-// }
-
-// func (gm GameMap) GetTilesByZ(z int) []struct {
-// 	components.Position
-// 	components.TileType
-// 	components.Sprite
-// } {
-// 	return gm.TilesByZ[z]
-// }
-
-// func (gm GameMap) GetResourcesByZ(z int) []struct {
-// 	components.Position
-// 	components.Sprite
-// } {
-// 	return gm.ResourcesByZ[z]
-// }
-
-// func (gm GameMap) GetTilesByType(tt enums.TileTypeEnum) []components.Position {
-// 	return gm.TilesByType[tt]
-// }
-
-// // NewGameMap creates the world map and stores each tile information
-// func NewGameMap(world engine.World) GameMap {
-// 	w := GameMap{
-// 		Grids: make(map[int]*paths.Grid),
-// 		TilesByZ: map[int][]struct {
-// 			components.Position
-// 			components.TileType
-// 			components.Sprite
-// 		}{},
-// 		TilesByType: make(map[enums.TileTypeEnum][]components.Position),
-// 		ResourcesByZ: make(map[int][]struct {
-// 			components.Position
-// 			components.Sprite
-// 		}),
-// 		World: world,
-// 	}
-
-// 	// Setup world tiles
-// 	for z := 1; z <= assets.WorldLevels; z++ {
-// 		g := paths.NewGrid(assets.WorldWidth, assets.WorldHeight, assets.CellSize, assets.CellSize)
-// 		for x := 0; x < assets.WorldWidth; x++ {
-// 			for y := 0; y < assets.WorldHeight; y++ {
-// 				c := g.Get(x, y)
-// 				t := struct {
-// 					components.Position
-// 					components.TileType
-// 					components.Sprite
-// 				}{
-// 					Position: components.NewPosition(x, y, z),
-// 				}
-
-// 				if z == 5 {
-// 					t.TileType = components.NewTileType(enums.TileTypeDirt)
-// 					t.Image = assets.Images["dirt0"]
-// 				} else if z < 5 {
-// 					t.TileType = components.NewTileType(enums.TileTypeRock)
-// 					// t.Image = assets.Images["rock"]
-// 					c.Walkable = false
-// 				} else {
-// 					t.TileType = components.NewTileType(enums.TileTypeEmpty)
-// 					c.Walkable = false
-// 				}
-
-// 				w.TilesByZ[z] = append(w.TilesByZ[z], t)
-// 				w.TilesByType[t.TileTypeEnum] = append(w.TilesByType[t.TileTypeEnum], t.Position)
-// 			}
-// 		}
-// 		w.Grids[z] = g
-// 	}
-
-// 	// Setup resource tiles
-// 	rand.Seed(time.Now().UnixNano())
-
-// 	for _, tile := range w.TilesByType[enums.TileTypeDirt] {
-// 		if rand.Intn(100) < 5 {
-// 			g := w.Grids[tile.Z]
-// 			c := g.Get(tile.X, tile.Y)
-// 			c.Walkable = false
-
-// 			t := struct {
-// 				components.Position
-// 				components.Sprite
-// 			}{
-// 				Position: components.NewPosition(tile.X, tile.Y, tile.Z),
-// 				Sprite:   components.NewSprite(assets.Images["tree0"], 0),
-// 			}
-
-// 			w.ResourcesByZ[tile.Z] = append(w.ResourcesByZ[tile.Z], t)
-// 		}
-// 	}
-
-// 	return w
-// }
-
-// func (g GameMap) UpdateTile(fromTileType enums.TileTypeEnum, tileByTypeIndex int, newTileType enums.TileTypeEnum) {
-// 	tile := g.GetTilesByType(fromTileType)[tileByTypeIndex]
-// 	tileMap := g.World.View(components.TileMap{}, components.Sprite{}, components.Position{}).Filter()
+// func UpdateTile(w engine.World, fromTileType, newTileType enums.TileTypeEnum, tileByTypeIndex int, gmComp *components.GameMapSingleton) {
+// 	tile := gmComp.TilesByType[fromTileType][tileByTypeIndex]
+// 	tileMap := w.View(components.TileMap{}, components.Sprite{}, components.Position{}).Filter()
 // 	rand.Seed(time.Now().UnixNano())
 
 // 	for _, tm := range tileMap {
@@ -275,57 +234,33 @@ func updateAdjacentTiles(w engine.World, gmComp *components.GameMapSingleton, ti
 // 		tm.Get(&tmPos, &tmSprite)
 // 		if tmPos.Z == tile.Z {
 // 			op := &ebiten.DrawImageOptions{}
-// 			op.GeoM.Translate(float64(tile.X*assets.CellSize), float64(tile.Y*assets.CellSize))
+// 			op.GeoM.Translate(float64(tile.X*assets.TileSize), float64(tile.Y*assets.TileSize))
 
 // 			switch newTileType {
-// 			case enums.TileTypeGrass:
-// 				r := rand.Intn(3)
-// 				tmSprite.Image.DrawImage(assets.Images[fmt.Sprintf("grass%d", r)], op)
-// 			case enums.TileTypeRockFloor:
-// 				tmSprite.Image.DrawImage(assets.Images["rockfloor"], op)
-// 				cell := g.Grids[tile.Z].Get(tile.X, tile.Y)
+// 			case enums.TileTypeGrass0:
+// 				// r := rand.Intn(3)
+// 				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeGrass0], op)
+// 				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
 // 				cell.Walkable = true
-// 				g.UpdateAdjacentTiles(tile, enums.TileTypeRockFloor)
+// 			case enums.TileTypeRockFloor:
+// 				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeRockFloor], op)
+// 				cell := gmComp.Grids[tile.Z].Get(tile.X, tile.Y)
+// 				cell.Walkable = true
+// 				updateAdjacentTiles(w, gmComp, tile, enums.TileTypeRockFloor)
 // 			case enums.TileTypeRock:
-// 				tmSprite.Image.DrawImage(assets.Images["rock"], op)
+// 				tmSprite.Image.DrawImage(assets.OpaqueImages[enums.TileTypeRock], op)
 // 			}
 // 			// Update maps
 // 			if fromTileType != newTileType {
-// 				g.TilesByType[fromTileType] = append(g.TilesByType[fromTileType][:tileByTypeIndex], g.TilesByType[fromTileType][tileByTypeIndex+1:]...)
-// 				g.TilesByType[newTileType] = append(g.TilesByType[newTileType], tile)
+// 				gmComp.TilesByType[fromTileType] = append(gmComp.TilesByType[fromTileType][:tileByTypeIndex], gmComp.TilesByType[fromTileType][tileByTypeIndex+1:]...)
+// 				gmComp.TilesByType[newTileType] = append(gmComp.TilesByType[newTileType], tile)
 // 			}
 // 			break
 // 		}
 // 	}
 // }
 
-// // func (g GameMap) GetTileByZIndexFromPos(z int, pos components.Position) (int, error) {
-// // 	for i, t := range g.TilesByZ[z] {
-// // 		if g.Matches(t.Position, pos) {
-// // 			return i, nil
-// // 		}
-// // 	}
-
-// // 	return 0, fmt.Errorf("unable to find %v at %v", pos, z)
-// // }
-
-// func (g GameMap) GetTileTypeFromPos(pos components.Position) (enums.TileTypeEnum, bool) {
-// 	for tt, t := range g.TilesByType {
-// 		for _, p := range t {
-// 			if g.Matches(pos, p) {
-// 				return tt, true
-// 			}
-// 		}
-// 	}
-
-// 	return enums.TileTypeEmpty, false
-// }
-
-// func (g GameMap) AddTileByType(tileType enums.TileTypeEnum, pos components.Position) {
-// 	g.TilesByType[tileType] = append(g.TilesByType[tileType], pos)
-// }
-
-// func (g GameMap) UpdateAdjacentTiles(tile components.Position, centreTileType enums.TileTypeEnum) {
+// func updateAdjacentTiles(w engine.World, gmComp *components.GameMapSingleton, tile components.Position, centreTileType enums.TileTypeEnum) {
 // 	for x := -1; x <= 1; x++ {
 // 		for y := -1; y <= 1; y++ {
 // 			if x == 0 && y == 0 {
@@ -338,26 +273,18 @@ func updateAdjacentTiles(w engine.World, gmComp *components.GameMapSingleton, ti
 // 				continue
 // 			}
 
-// 			cell := g.Grids[currentTile.Z].Get(currentTile.X, currentTile.Y)
+// 			cell := gmComp.Grids[currentTile.Z].Get(currentTile.X, currentTile.Y)
 // 			if cell.Walkable {
 // 				continue
 // 			}
 
 // 			if centreTileType == enums.TileTypeRockFloor {
-// 				index, err := g.GetTileByTypeIndexFromPos(enums.TileTypeRock, currentTile)
+// 				index, err := GetTileByTypeIndexFromPos(currentTile, gmComp.TilesByType[enums.TileTypeRock])
 // 				if err != nil {
 // 					log.Printf("failed to find index for %v at %v\n", enums.TileTypeRock, currentTile)
 // 				}
-// 				g.UpdateTile(enums.TileTypeRock, index, enums.TileTypeRock)
+// 				UpdateTile(w, enums.TileTypeRock, enums.TileTypeRock, index, gmComp)
 // 			}
 // 		}
 // 	}
-// }
-
-// func (g GameMap) Matches(a components.Position, b components.Position) bool {
-// 	if a.X == b.X && a.Y == b.Y && a.Z == b.Z {
-// 		return true
-// 	}
-
-// 	return false
 // }

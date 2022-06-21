@@ -82,7 +82,7 @@ func StockpileLocations(w engine.World, itemType enums.ItemTypeEnum, assignItemT
 		return itemTypePositions
 	}
 
-	if assignItemType && itemType != enums.ItemTypeNone {
+	if firstFree > 0 && assignItemType && itemType != enums.ItemTypeNone {
 		e, found := w.GetEntity(firstFree)
 		if !found {
 			log.Println("somehow failed to find entity")
@@ -90,6 +90,11 @@ func StockpileLocations(w engine.World, itemType enums.ItemTypeEnum, assignItemT
 		}
 
 		e.Get(&d, &p)
+		if d == nil {
+			log.Println("designation component not found")
+			return nil
+		}
+
 		d.ItemType = itemType
 		return []components.Position{*p}
 	}

@@ -20,16 +20,18 @@ func (i *Item) Update(w engine.World) {
 func (i *Item) Draw(w engine.World, screen *ebiten.Image) {
 	ents := w.View(components.Item{}, components.Position{}, components.Sprite{})
 
-	var p *components.Position
-	var s *components.Sprite
+	// var p *components.Position
+	// var s *components.Sprite
 
-	ents.Each(func(e engine.Entity) {
-		e.Get(&p, &s)
+	helpers.DrawImages(w, ents)
 
-		if !s.Drawn {
-			return
-		}
+	// ents.Each(func(e engine.Entity) {
+	// 	e.Get(&p, &s)
 
-		helpers.DrawImage(w, screen, *p, s.Image)
-	})
+	// 	if !s.Drawn {
+	// 		return
+	// 	}
+
+	// 	helpers.DrawImage(w, screen, *p, s.Image)
+	// })
 }

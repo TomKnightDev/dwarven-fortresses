@@ -21,16 +21,17 @@ import (
 // This package is for loading all the images and storing world information
 
 const (
-	WorldWidth  = 200
-	WorldHeight = 200
+	WorldWidth  = 250
+	WorldHeight = 250
 	WorldLevels = 10
+	Groundlevel = 5
 
-	StartingDwarfCount = 7
+	StartingDwarfCount = 10
 )
 
 var (
 	TileSize      int
-	TilesetImages = make(map[string]*ebiten.Image)
+	tilesetImages = make(map[string]*ebiten.Image)
 	OpaqueImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
 	TransImages   = make(map[enums.TileTypeEnum]*ebiten.Image)
 	MainAudio     *mp3.Stream
@@ -59,8 +60,8 @@ func init() {
 
 func LoadImages() {
 	abs, err := filepath.Abs("./assets/images/tileset.json")
-	if err == nil {
-		fmt.Println("Absolute:", abs)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	fmt.Println(abs)
@@ -79,8 +80,8 @@ func LoadImages() {
 	for _, ts := range tilesetDef.TilesetFileNames {
 		// Read tile sets from definition
 		abs, err = filepath.Abs("./assets/images/" + ts)
-		if err == nil {
-			fmt.Println("Absolute:", abs)
+		if err != nil {
+			log.Fatal(err)
 		}
 
 		tileset, err := os.ReadFile(abs)
@@ -92,14 +93,14 @@ func LoadImages() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		TilesetImages[ts] = ebiten.NewImageFromImage(img)
+		tilesetImages[ts] = ebiten.NewImageFromImage(img)
 	}
 
 	TileSize = tilesetDef.TileSize
 
 	for _, t := range tilesetDef.Tiles {
-		OpaqueImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.OpaqueFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
-		TransImages[enums.TileTypeEnum(t.Id)] = TilesetImages[t.TransparentFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
+		OpaqueImages[enums.TileTypeEnum(t.Id)] = tilesetImages[t.OpaqueFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
+		TransImages[enums.TileTypeEnum(t.Id)] = tilesetImages[t.TransparentFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
 	}
 
 }

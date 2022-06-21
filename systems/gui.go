@@ -9,10 +9,13 @@ import (
 )
 
 type Gui struct {
+	NewGame func(engine.World)
 }
 
-func NewGui() *Gui {
-	return &Gui{}
+func NewGui(newGame func(engine.World)) *Gui {
+	return &Gui{
+		NewGame: newGame,
+	}
 }
 
 func (g *Gui) Update(w engine.World) {
@@ -24,17 +27,18 @@ func (g *Gui) Update(w engine.World) {
 	is.Get(&inputSingleton)
 
 	inputSingleton.InGui = false
+	if inputSingleton.IsMouseLeftPressed {
+		ents := w.View(components.Gui{}, components.Sprite{}).Filter()
+		for _, e := range ents {
+			var gsp *components.Sprite
+			var gui *components.Gui
+			e.Get(&gsp, &gui)
 
-	ents := w.View(components.Gui{}, components.Sprite{}).Filter()
-	for _, e := range ents {
-		var gsp *components.Sprite
-		var gui *components.Gui
-		e.Get(&gsp, &gui)
-
-		if g.Within(*gui, inputSingleton.MousePosX, inputSingleton.MousePosY) {
-			inputSingleton.InGui = true
-			if inputSingleton.IsMouseLeftPressed {
+			if g.Within(*gui, inputSingleton.MousePosX, inputSingleton.MousePosY) {
+				inputSingleton.InGui = true
 				switch gui.Action {
+				case enums.GuiActionNewGame:
+					g.NewGame(w)
 				case enums.GuiActionStair:
 					inputSingleton.InputMode = enums.InputModeBuild
 				case enums.GuiActionChop:
@@ -50,6 +54,9 @@ func (g *Gui) Update(w engine.World) {
 }
 
 func (g *Gui) Draw(w engine.World, screen *ebiten.Image) {
+	width, height := ebiten.WindowSize()
+	xCentre := width / 2
+	yCentre := height / 2
 	view := w.View(components.Gui{}, components.Sprite{})
 	view.Each(func(e engine.Entity) {
 		var gui *components.Gui
@@ -57,7 +64,13 @@ func (g *Gui) Draw(w engine.World, screen *ebiten.Image) {
 		e.Get(&gui, &sprite)
 		op := &ebiten.DrawImageOptions{}
 
+		if gui.Position == enums.GuiPositionRelative {
+			gui.X = xCentre - assets.TileSize*int(gui.Scale)/2
+			gui.Y = yCentre - assets.TileSize*int(gui.Scale)/2
+		}
+
 		op.GeoM.Translate(float64(gui.X)/gui.Scale, float64(gui.Y)/gui.Scale)
+
 		op.GeoM.Scale(gui.Scale, gui.Scale)
 		screen.DrawImage(sprite.Image, op)
 	})
