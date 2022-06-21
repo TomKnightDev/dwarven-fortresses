@@ -153,7 +153,7 @@ func (m *Mouse) Draw(w engine.World, screen *ebiten.Image) {
 		mouseSprite.Image = assets.OpaqueImages[enums.TileTypeStockpile]
 	}
 
-	helpers.DrawImage(w, screen, *mousePos, mouseSprite.Image)
+	helpers.DrawImage(w, *mousePos, mouseSprite.Image)
 
 	if inputSingleton.MouseLeftPressDuration || inputSingleton.MouseRightPressDuration {
 		startX := mComp.MouseStart.X
@@ -175,7 +175,7 @@ func (m *Mouse) Draw(w engine.World, screen *ebiten.Image) {
 
 		for mx := startX; mx <= endX; mx++ {
 			for my := startY; my <= endY; my++ {
-				helpers.DrawImage(w, screen, components.NewPosition(mx, my, mousePos.Z), mouseSprite.Image)
+				helpers.DrawImage(w, components.NewPosition(mx, my, mousePos.Z), mouseSprite.Image)
 			}
 		}
 	}

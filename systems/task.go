@@ -25,13 +25,7 @@ func (t *Task) Update(w engine.World) {
 		return
 	}
 
-	gms, found := w.View(components.GameMapSingleton{}).Get()
-	if !found {
-		panic("game map singleton not found")
-	}
-
-	var gmComp *components.GameMapSingleton
-	gms.Get(&gmComp)
+	// gms := helpers.GetGameMapSingleton(w)
 
 	var entitiesToRemove []engine.Entity
 	var job *components.Job
@@ -44,62 +38,22 @@ func (t *Task) Update(w engine.World) {
 			pos := currentTask.Position
 			switch currentTask.TaskTypeEnum {
 			case enums.TaskTypeChop:
-				ent, ok := w.GetEntity(job.EntityID)
-				if !ok {
-					log.Println("entity not found ", job.EntityID)
-				}
 
-				cell := gmComp.Grids[pos.Z].Get(pos.X, pos.Y)
-				cell.Walkable = true
+				helpers.RemoveResourceFromTile(w, pos, enums.ResourceTypeTree, true)
 
-				var drop *components.Drops
-				ent.Get(&drop)
-
-				for i := 0; i < drop.DropCount; i++ {
-					w.AddEntities(&entities.Item{
-						Position: pos,
-						Sprite:   components.NewSprite(assets.TransImages[enums.TileTypeLog0]),
-						Item:     components.NewItem(true, 25, enums.ItemTypeLog),
-					})
-				}
-
-				entitiesToRemove = append(entitiesToRemove, ent)
-			case enums.TaskTypeBuild:
-				w.AddEntities(&entities.Building{
+				w.AddEntities(&entities.Item{
 					Position: pos,
-					Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeStairDown]),
-					TileType: components.NewTileType(enums.TileTypeStairDown),
-					Building: components.NewBuilding(),
+					Sprite:   components.NewSprite(assets.TransImages[enums.TileTypeLog0]),
+					Item:     components.NewItem(true, 25, enums.ItemTypeLog),
 				})
-				gmComp.TilesByType[enums.TileTypeStairDown] = append(gmComp.TilesByType[enums.TileTypeStairDown], pos)
 
-				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z-1), gmComp.TilesByType[enums.TileTypeRock])
-				if err != nil {
-					log.Println(err)
-					entitiesToRemove = append(entitiesToRemove, e)
-					continue
-				}
-
-				helpers.UpdateTile(w, enums.TileTypeRock, enums.TileTypeRockFloor, index, gmComp)
-
-				w.AddEntities(&entities.Building{
-					Position: components.NewPosition(pos.X, pos.Y, pos.Z-1),
-					Sprite:   components.NewSprite(assets.OpaqueImages[enums.TileTypeStairUp]),
-					TileType: components.NewTileType(enums.TileTypeStairUp),
-					Building: components.NewBuilding(),
-				})
-				gmComp.TilesByType[enums.TileTypeStairUp] = append(gmComp.TilesByType[enums.TileTypeStairUp], components.NewPosition(pos.X, pos.Y, pos.Z-1))
+			case enums.TaskTypeBuild:
+				helpers.AddBuildingToTile(w, pos, enums.TileTypeStairDown, true)
+				helpers.AddBuildingToTile(w, components.NewPosition(pos.X, pos.Y, pos.Z-1), enums.TileTypeStairUp, true)
+				helpers.MineTile(w, components.NewPosition(pos.X, pos.Y, pos.Z-1))
 
 			case enums.TaskTypeMine:
-				index, err := helpers.GetTileByTypeIndexFromPos(components.NewPosition(pos.X, pos.Y, pos.Z),
-					gmComp.TilesByType[enums.TileTypeRock])
-				if err != nil {
-					log.Println(err)
-					entitiesToRemove = append(entitiesToRemove, e)
-					continue
-				}
-
-				helpers.UpdateTile(w, enums.TileTypeRock, enums.TileTypeRockFloor, index, gmComp)
+				helpers.MineTile(w, pos)
 
 				for i := 0; i < 1; i++ {
 					w.AddEntities(&entities.Item{
@@ -110,7 +64,7 @@ func (t *Task) Update(w engine.World) {
 				}
 
 			case enums.TaskTypePickUp:
-				item, found := w.GetEntity(job.EntityID)
+				item, found := w.GetEntity(job.EntityId)
 				if !found {
 					log.Println("item entity not found")
 				}
@@ -124,7 +78,7 @@ func (t *Task) Update(w engine.World) {
 
 				var inv *components.Inventory
 				actor.Get(&inv)
-				inv.Items = append(inv.Items, job.EntityID)
+				inv.Items = append(inv.Items, job.EntityId)
 				inv.Weight += ite.Weight
 
 				var itemSprite *components.Sprite
@@ -141,7 +95,7 @@ func (t *Task) Update(w engine.World) {
 				var move *components.Move
 				actor.Get(&inv, &move)
 
-				item, found := w.GetEntity(job.EntityID)
+				item, found := w.GetEntity(job.EntityId)
 				if !found {
 					log.Println("item entity not found")
 				}
@@ -155,13 +109,13 @@ func (t *Task) Update(w engine.World) {
 				itemSprite.Drawn = true
 
 				for i, it := range inv.Items {
-					if it == job.EntityID {
+					if it == job.EntityId {
 						inv.Items = append(inv.Items[:i], inv.Items[i+1:]...)
 					}
 				}
 				inv.Weight -= ite.Weight
 
-				helpers.AddItemToStockpile(w, *itemPos, job.EntityID, 1)
+				helpers.AddItemToStockpile(w, *itemPos, job.EntityId, 1)
 				// }
 			}
 

@@ -1,8 +1,13 @@
 package components
 
+import "github.com/tomknightdev/dwarven-fortresses/enums"
+
 type Building struct {
+	enums.TileTypeEnum
 }
 
-func NewBuilding() Building {
-	return Building{}
+func NewBuilding(tt enums.TileTypeEnum) Building {
+	return Building{
+		TileTypeEnum: tt,
+	}
 }

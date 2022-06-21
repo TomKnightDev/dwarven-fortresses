@@ -8,6 +8,8 @@ type DropTypeEnum int
 type TaskTypeEnum int
 type DesignationTypeEnum int
 type ItemTypeEnum int
+type RenderImageEnum int
+type GuiPositionEnum int
 
 const (
 	TileTypeEmpty TileTypeEnum = iota
@@ -33,6 +35,7 @@ const (
 	TileTypeStairDown
 	TileTypeStairUp
 	TileTypePickaxe
+	TileTypeNewGame
 )
 
 const (
@@ -51,6 +54,7 @@ const (
 	GuiActionStair
 	GuiActionMine
 	GuiActionStockpile
+	GuiActionNewGame
 )
 
 const (
@@ -83,4 +87,18 @@ const (
 	ItemTypeNone ItemTypeEnum = iota
 	ItemTypeLog
 	ItemTypeStone
+)
+
+const (
+	TileImage RenderImageEnum = iota
+	ResourceImage
+	BuildingImage
+	ItemImage
+	ActorImage
+	GuiImage
+)
+
+const (
+	GuiPositionAbsolute GuiPositionEnum = iota
+	GuiPositionRelative
 )

@@ -18,8 +18,6 @@ func NewActor() *Actor {
 }
 
 func (a *Actor) Update(w engine.World) {
-	jobs := w.View(components.Job{}).Filter()
-
 	actors := w.View(components.Worker{}, components.Move{}, components.Position{})
 	actors.Each(func(e engine.Entity) {
 		var worker *components.Worker
@@ -28,51 +26,63 @@ func (a *Actor) Update(w engine.World) {
 
 		e.Get(&worker, &move, &pos)
 
+		if worker.GettingJob {
+			return
+		}
+
 		if !worker.HasJob {
-			if len(jobs) == 0 {
+			worker.GettingJob = true
+			// go func() {
+			jobEnt, paths := helpers.GetJob(w, *pos)
+
+			if jobEnt == nil {
+				worker.GettingJob = false
 				return
 			}
 
-			var tasks *components.Job
+			var job *components.Job
+			jobEnt.Get(&job)
 
-			for _, job := range jobs {
-				job.Get(&tasks)
-				if tasks.ClaimedByID > 0 {
-					continue
-				}
+			move.CurrentPaths = paths
+			worker.HasJob = true
+			worker.JobID = jobEnt.ID()
 
-				worker.HasJob = true
-				worker.JobID = job.ID()
+			currentTask := job.Tasks[0]
 
-				currentTask := tasks.Tasks[0]
-
-				move.Adjacent = true
-				if currentTask.TaskTypeEnum == enums.TaskTypePickUp || currentTask.TaskTypeEnum == enums.TaskTypeDrop {
-					move.Adjacent = false
-				}
-
-				move.X = currentTask.Position.X
-				move.Y = currentTask.Position.Y
-				move.Z = currentTask.Position.Z
-				tasks.ClaimedByID = e.ID()
-				break
+			move.Adjacent = true
+			if currentTask.TaskTypeEnum == enums.TaskTypePickUp || currentTask.TaskTypeEnum == enums.TaskTypeDrop {
+				move.Adjacent = false
 			}
+
+			move.X = currentTask.Position.X
+			move.Y = currentTask.Position.Y
+			move.Z = currentTask.Position.Z
+			job.ClaimedByID = e.ID()
+			worker.GettingJob = false
+			// }()
+
+			// return
 		} else if move.Arrived {
 			if move.CurrentEnergy < move.TotalEnergy {
 				move.CurrentEnergy++
 				return
 			}
-
-			job, found := w.GetEntity(worker.JobID)
+			jobEnt, found := w.GetEntity(worker.JobID)
 			if !found {
-				log.Println("arrived at location but job not found")
+				log.Println("unable to find job entity", worker.JobID)
 				worker.HasJob = false
+				worker.JobID = 0
 				return
 			}
-
-			var tasks *components.Job
-			job.Get(&tasks)
-			currentTask := tasks.Tasks[0]
+			var job *components.Job
+			jobEnt.Get(&job)
+			if job == nil {
+				log.Println("unable to find job component")
+				worker.HasJob = false
+				worker.JobID = 0
+				return
+			}
+			currentTask := job.Tasks[0]
 
 			if currentTask.ActionsComplete < currentTask.RequiredActions {
 				currentTask.ActionsComplete++
@@ -81,8 +91,8 @@ func (a *Actor) Update(w engine.World) {
 			}
 
 			currentTask.CompleteTask()
-			if len(tasks.Tasks) > 1 {
-				task := tasks.Tasks[1]
+			if len(job.Tasks) > 1 {
+				task := job.Tasks[1]
 				move.Adjacent = true
 				if task.TaskTypeEnum == enums.TaskTypePickUp || task.TaskTypeEnum == enums.TaskTypeDrop || task.TaskTypeEnum == enums.TaskTypeAddToStockpile {
 					move.Adjacent = false
@@ -91,7 +101,7 @@ func (a *Actor) Update(w engine.World) {
 				move.X = task.Position.X
 				move.Y = task.Position.Y
 				move.Z = task.Position.Z
-				tasks.ClaimedByID = e.ID()
+				job.ClaimedByID = e.ID()
 				move.Arrived = false
 				return
 			}
@@ -117,12 +127,5 @@ func (a *Actor) Update(w engine.World) {
 
 func (a *Actor) Draw(w engine.World, screen *ebiten.Image) {
 	ents := w.View(components.Move{}, components.Position{}, components.Sprite{})
-	var p *components.Position
-	var s *components.Sprite
-
-	ents.Each(func(e engine.Entity) {
-		e.Get(&p, &s)
-
-		helpers.DrawImage(w, screen, *p, s.Image)
-	})
+	helpers.DrawImages(w, ents)
 }

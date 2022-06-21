@@ -24,11 +24,13 @@ func (g *Game) Setup(w engine.World) {
 	w.AddComponents(
 		components.InputSingleton{},
 		components.GameMapSingleton{},
+		components.RenderSingleton{},
 		components.Position{},
 		components.Sprite{},
 		components.Move{},
 		components.Mouse{},
 		components.Zoom{},
+		components.Tile{},
 		components.TileType{},
 		components.Task{},
 		components.Job{},
@@ -47,12 +49,12 @@ func (g *Game) Setup(w engine.World) {
 	)
 
 	w.AddSystems(
+
+		systems.NewRender(),
 		systems.NewInput(),
 		systems.NewGameMap(),
 		systems.NewCamera(),
-		systems.NewMouse(),
 		systems.NewPathfinder(),
-		systems.NewGui(),
 		systems.NewNature(),
 		systems.NewBuilding(),
 		systems.NewDesignations(),
@@ -60,11 +62,14 @@ func (g *Game) Setup(w engine.World) {
 		systems.NewJob(),
 		systems.NewActor(),
 		systems.NewTask(),
+		systems.NewMouse(),
 		systems.NewDebug(),
+		systems.NewGui(nil),
 	)
 
 	// Admin entity
 	w.AddEntities(&entities.Admin{
+		RenderSingleton:  components.NewRenderSingleton(),
 		InputSingleton:   components.NewInputSingleton(),
 		GameMapSingleton: components.NewGameMapSingleton(),
 		NatureSingleton:  components.NewNatureSingleton(),
@@ -101,19 +106,19 @@ func (g *Game) Setup(w engine.World) {
 
 func setupGui(w engine.World) {
 	w.AddEntities(&entities.Gui{
-		Gui:    components.NewGui(10, 200, 3.0, enums.GuiActionStair),
+		Gui:    components.NewGui(10, 200, enums.GuiPositionAbsolute, 3.0, enums.GuiActionStair),
 		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeStairDown]),
 	})
 	w.AddEntities(&entities.Gui{
-		Gui:    components.NewGui(10, 250, 3.0, enums.GuiActionChop),
+		Gui:    components.NewGui(10, 250, enums.GuiPositionAbsolute, 3.0, enums.GuiActionChop),
 		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeTree0]),
 	})
 	w.AddEntities(&entities.Gui{
-		Gui:    components.NewGui(10, 300, 3.0, enums.GuiActionMine),
+		Gui:    components.NewGui(10, 300, enums.GuiPositionAbsolute, 3.0, enums.GuiActionMine),
 		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypePickaxe]),
 	})
 	w.AddEntities(&entities.Gui{
-		Gui:    components.NewGui(10, 350, 3.0, enums.GuiActionStockpile),
+		Gui:    components.NewGui(10, 350, enums.GuiPositionAbsolute, 3.0, enums.GuiActionStockpile),
 		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeStockpile]),
 	})
 }
@@ -129,5 +134,5 @@ func setupAudio() {
 	// TODO Be able to set the volume in the settings
 	p.SetVolume(0.2)
 
-	p.Play()
+	// p.Play()
 }
