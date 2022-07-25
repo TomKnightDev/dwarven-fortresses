@@ -14,7 +14,7 @@ func GetJob(w engine.World, pos components.Position) (engine.Entity, []component
 	for _, j := range jobs {
 		j.Get(&job)
 
-		if job.ClaimedByID > 0 {
+		if job.ClaimedByID > 0 || job.Tasks[0].Blocked {
 			continue
 		}
 
@@ -31,6 +31,7 @@ func GetJob(w engine.World, pos components.Position) (engine.Entity, []component
 		}
 
 		if len(paths) == 0 {
+			job.Tasks[0].Blocked = true
 			continue
 		}
 
