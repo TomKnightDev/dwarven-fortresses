@@ -27,15 +27,15 @@ func (g *Gui) Update(w engine.World) {
 	is.Get(&inputSingleton)
 
 	inputSingleton.InGui = false
-	if inputSingleton.IsMouseLeftPressed {
-		ents := w.View(components.Gui{}, components.Sprite{}).Filter()
-		for _, e := range ents {
-			var gsp *components.Sprite
-			var gui *components.Gui
-			e.Get(&gsp, &gui)
+	ents := w.View(components.Gui{}, components.Sprite{}).Filter()
+	for _, e := range ents {
+		var gsp *components.Sprite
+		var gui *components.Gui
+		e.Get(&gsp, &gui)
 
-			if g.Within(*gui, inputSingleton.MousePosX, inputSingleton.MousePosY) {
-				inputSingleton.InGui = true
+		if g.Within(*gui, inputSingleton.MousePosX, inputSingleton.MousePosY) {
+			inputSingleton.InGui = true
+			if inputSingleton.IsMouseLeftPressed {
 				switch gui.Action {
 				case enums.GuiActionNewGame:
 					g.NewGame(w)
