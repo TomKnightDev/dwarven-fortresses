@@ -119,6 +119,9 @@ func (t *Task) Update(w engine.World) {
 				// }
 			}
 
+			// Update surronding tasks that are blocked
+			updateSurroundingTasks(job.Tasks[0].Position, ents)
+
 			job.Tasks = job.Tasks[1:]
 			if len(job.Tasks) == 0 {
 				entitiesToRemove = append(entitiesToRemove, e)
@@ -128,5 +131,20 @@ func (t *Task) Update(w engine.World) {
 
 	for _, job := range entitiesToRemove {
 		w.RemoveEntity(job)
+	}
+}
+
+func updateSurroundingTasks(pos components.Position, ents []engine.Entity) {
+	var job *components.Job
+	for _, e := range ents {
+		e.Get(&job)
+
+		if len(job.Tasks) <= 0 || !job.Tasks[0].Blocked {
+			continue
+		}
+
+		if helpers.IsAdjacent(components.NewMove(pos.X, pos.Y, pos.Z), job.Tasks[0].Position) {
+			job.Tasks[0].Blocked = false
+		}
 	}
 }

@@ -8,6 +8,7 @@ type Task struct {
 	ActionsComplete int
 	Position        Position
 	Completed       bool
+	Blocked         bool
 }
 
 func NewTask(pos Position, taskType enums.TaskTypeEnum, requiredActions int) *Task {
