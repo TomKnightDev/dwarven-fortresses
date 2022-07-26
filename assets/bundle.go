@@ -4,7 +4,6 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
-	"fmt"
 	"image"
 	"image/png"
 	"io/ioutil"
@@ -16,6 +15,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/tomknightdev/dwarven-fortresses/enums"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
 
 // This package is for loading all the images and storing world information
@@ -35,6 +36,7 @@ var (
 	OpaqueImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
 	TransImages   = make(map[enums.TileTypeEnum]*ebiten.Image)
 	MainAudio     *mp3.Stream
+	MainFont      font.Face
 )
 
 type TilesetDefinition struct {
@@ -56,6 +58,7 @@ type Tile struct {
 func init() {
 	LoadImages()
 	LoadAudio()
+	LoadFonts()
 }
 
 func LoadImages() {
@@ -64,7 +67,6 @@ func LoadImages() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(abs)
 	// Read tileset json file
 	tsd, err := ioutil.ReadFile(abs)
 	if err != nil {
@@ -111,6 +113,29 @@ func LoadAudio() {
 		log.Fatal(err)
 	}
 	MainAudio, err = mp3.DecodeWithSampleRate(44100, audio)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func LoadFonts() {
+	loc, err := filepath.Abs("./assets/fonts/manaspc.ttf")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fontFile, err := ioutil.ReadFile(loc)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tt, err := opentype.Parse(fontFile)
+	const dpi = 72
+	MainFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    24,
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}

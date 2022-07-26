@@ -21,6 +21,7 @@ func (mm *MainMenu) Setup(w engine.World) {
 		components.InputSingleton{},
 		components.Mouse{},
 		components.Gui{},
+		components.Text{},
 		components.Sprite{},
 		components.Position{},
 		components.RenderSingleton{},
@@ -44,7 +45,11 @@ func (mm *MainMenu) Setup(w engine.World) {
 	w.AddEntities(&entities.Gui{
 		Gui:    components.NewGui(0, 0, enums.GuiPositionRelative, 10.0, enums.GuiActionNewGame),
 		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeNewGame]),
-	})
+	},
+		&entities.GuiText{
+			Gui:  components.NewGui(-100, 0, enums.GuiPositionRelative, 10.0, enums.GuiActionNewGame),
+			Text: components.NewText("Dwarven Fortress"),
+		})
 }
 
 func NewGameScene(w engine.World) {

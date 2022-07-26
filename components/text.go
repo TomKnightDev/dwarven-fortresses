@@ -5,7 +5,5 @@ type Text struct {
 }
 
 func NewText(content string) Text {
-	return Text{
-		content,
-	}
+	return Text{content}
 }

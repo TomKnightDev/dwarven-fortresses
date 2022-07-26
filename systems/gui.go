@@ -105,7 +105,7 @@ func RenderText(w engine.World, screen *ebiten.Image) {
 		op.GeoM.Translate(float64(gui.X)/gui.Scale, float64(gui.Y)/gui.Scale)
 
 		op.GeoM.Scale(gui.Scale, gui.Scale)
-		text.Draw(screen, ctext.Content, mplusBigFont, gui.X, gui.Y, color.White)
+		text.Draw(screen, ctext.Content, assets.MainFont, gui.X, gui.Y, color.White)
 	})
 }
 

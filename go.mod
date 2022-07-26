@@ -16,10 +16,11 @@ require (
 	github.com/hajimehoshi/oto/v2 v2.1.0 // indirect
 	github.com/jezek/xgb v1.0.1 // indirect
 	golang.org/x/exp/shiny v0.0.0-20220613132600-b0d781184e0d // indirect
-	golang.org/x/image v0.0.0-20220617043117-41969df76e82 // indirect
+	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539 // indirect
 	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
+	golang.org/x/text v0.3.7 // indirect
 )
 
 replace github.com/OpenSauce/paths => github.com/tomknightdev/paths v0.0.0-20220603193109-b95c67e22a6a
