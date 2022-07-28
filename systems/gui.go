@@ -57,11 +57,11 @@ func (g *Gui) Update(w engine.World) {
 }
 
 func (g *Gui) Draw(w engine.World, screen *ebiten.Image) {
-	RenderSprites(w, screen)
-	RenderText(w, screen)
+	RenderGame(w, screen)
+	RenderUI(w, screen)
 }
 
-func RenderSprites(w engine.World, screen *ebiten.Image) {
+func RenderGame(w engine.World, screen *ebiten.Image) {
 	width, height := ebiten.WindowSize()
 	xCentre := width / 2
 	yCentre := height / 2
@@ -73,7 +73,7 @@ func RenderSprites(w engine.World, screen *ebiten.Image) {
 		e.Get(&gui, &sprite)
 		op := &ebiten.DrawImageOptions{}
 
-		if gui.Position == enums.GuiPositionRelative {
+		if gui.Position == enums.GuiPositionCenter {
 			gui.X = xCentre - assets.TileSize*int(gui.Scale)/2
 			gui.Y = yCentre - assets.TileSize*int(gui.Scale)/2
 		}
@@ -85,27 +85,23 @@ func RenderSprites(w engine.World, screen *ebiten.Image) {
 	})
 }
 
-func RenderText(w engine.World, screen *ebiten.Image) {
-	width, height := ebiten.WindowSize()
-	xCentre := width / 2
-	yCentre := height / 2
-
+func RenderUI(w engine.World, screen *ebiten.Image) {
 	view := w.View(components.Gui{}, components.Text{})
 	view.Each(func(e engine.Entity) {
 		var gui *components.Gui
 		var ctext *components.Text
 		e.Get(&gui, &ctext)
-		op := &ebiten.DrawImageOptions{}
 
-		if gui.Position == enums.GuiPositionRelative {
-			gui.X = xCentre - assets.TileSize*int(gui.Scale)/2
-			gui.Y = yCentre - assets.TileSize*int(gui.Scale)/2
+		if gui.FUI != nil {
+			gui.FUI.Draw(screen)
+			return
 		}
 
-		op.GeoM.Translate(float64(gui.X)/gui.Scale, float64(gui.Y)/gui.Scale)
+		offsetRect := text.BoundString(assets.MainFont, ctext.Content)
 
-		op.GeoM.Scale(gui.Scale, gui.Scale)
-		text.Draw(screen, ctext.Content, assets.MainFont, gui.X, gui.Y, color.White)
+		x, y := calculatePosition(gui.X, gui.Y, offsetRect.Max.X, offsetRect.Dy(), gui)
+
+		text.Draw(screen, ctext.Content, assets.MainFont, x, y, color.White)
 	})
 }
 
@@ -122,4 +118,24 @@ func (g Gui) scalePos(gui components.Gui) (int, int) {
 	x := gui.X + int(gui.Scale)*assets.TileSize
 	y := gui.Y + int(gui.Scale)*assets.TileSize
 	return x, y
+}
+
+func calculatePosition(x, y, xOffset, yOffset int, gui *components.Gui) (int, int) {
+	width, height := ebiten.WindowSize()
+	xCentre := width / 2
+	yCentre := height / 2
+	switch gui.Position {
+	case enums.GuiPositionCenter:
+		return x + xCentre - xOffset/2, y + yCentre - yOffset/2
+	case enums.GuiPositionTop:
+		return x + xCentre - xOffset/2, y + yOffset
+	case enums.GuiPositionBottom:
+		return x + xCentre - xOffset/2, height - y
+	case enums.GuiPositionLeft:
+		return x + 0, y + yCentre - yOffset/2
+	case enums.GuiPositionRight:
+		return width - x - xOffset, y + yCentre - yOffset
+	default:
+		return x, y
+	}
 }

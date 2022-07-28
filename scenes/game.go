@@ -32,6 +32,7 @@ func (g *Game) Setup(w engine.World) {
 		components.Tile{},
 		components.TileType{},
 		components.Task{},
+		components.Text{},
 		components.Job{},
 		components.Worker{},
 		components.TileMap{},

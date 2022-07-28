@@ -130,6 +130,10 @@ func LoadFonts() {
 	}
 
 	tt, err := opentype.Parse(fontFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	const dpi = 72
 	MainFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    24,

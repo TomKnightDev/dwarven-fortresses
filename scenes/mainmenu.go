@@ -42,13 +42,30 @@ func (mm *MainMenu) Setup(w engine.World) {
 		NatureSingleton:  components.NewNatureSingleton(),
 	})
 
-	w.AddEntities(&entities.Gui{
-		Gui:    components.NewGui(0, 0, enums.GuiPositionRelative, 10.0, enums.GuiActionNewGame),
-		Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeNewGame]),
-	},
+	w.AddEntities(
+		&entities.Gui{
+			Gui:    components.NewGui(0, 0, enums.GuiPositionCenter, 10.0, enums.GuiActionNewGame),
+			Sprite: components.NewSprite(assets.OpaqueImages[enums.TileTypeNewGame]),
+		},
 		&entities.GuiText{
-			Gui:  components.NewGui(-100, 0, enums.GuiPositionRelative, 10.0, enums.GuiActionNewGame),
+			Gui:  components.NewGui(0, 100, enums.GuiPositionTop, 10.0, enums.GuiActionNewGame),
 			Text: components.NewText("Dwarven Fortress"),
+		},
+		&entities.GuiText{
+			Gui:  components.NewGui(0, 120, enums.GuiPositionCenter, 10.0, enums.GuiActionNewGame),
+			Text: components.NewText("Play"),
+		},
+		&entities.GuiText{
+			Gui:  components.NewGui(0, 20, enums.GuiPositionBottom, 10.0, enums.GuiActionNewGame),
+			Text: components.NewText("By Tom Knight & Leigh Lawley"),
+		},
+		&entities.GuiText{
+			Gui:  components.NewGui(0, 0, enums.GuiPositionRight, 10.0, enums.GuiActionNewGame),
+			Text: components.NewText(">"),
+		},
+		&entities.GuiText{
+			Gui:  components.NewGui(0, 0, enums.GuiPositionLeft, 10.0, enums.GuiActionNewGame),
+			Text: components.NewText("<"),
 		})
 }
 
