@@ -92,8 +92,8 @@ func RenderUI(w engine.World, screen *ebiten.Image) {
 		var ctext *components.Text
 		e.Get(&gui, &ctext)
 
-		if gui.FUI != nil {
-			gui.FUI.Draw(screen)
+		if gui.UIUpdate != nil {
+			gui.UIUpdate(screen)
 			return
 		}
 

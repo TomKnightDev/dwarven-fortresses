@@ -1,8 +1,8 @@
 package components
 
 import (
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/tomknightdev/dwarven-fortresses/enums"
-	"github.com/yohamta/furex/v2"
 )
 
 type Gui struct {
@@ -10,7 +10,7 @@ type Gui struct {
 	Position enums.GuiPositionEnum
 	Scale    float64
 	Action   enums.GuiActionEnum
-	FUI      *furex.View
+	UIUpdate func(*ebiten.Image)
 }
 
 func NewGui(x, y int, position enums.GuiPositionEnum, scale float64, action enums.GuiActionEnum) Gui {
