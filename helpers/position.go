@@ -45,61 +45,20 @@ func IsAdjacent(dest components.Move, current components.Position) bool {
 }
 
 func StockpileLocations(w engine.World, itemType enums.ItemTypeEnum, assignItemType bool) []components.Position {
-	ents := w.View(components.Designation{}, components.Position{}, components.Inventory{})
+	gm := GetGameMapSingleton(w)
 
-	var d *components.Designation
-	var p *components.Position
-	var i *components.Inventory
-
-	var spPositions []components.Position
-	var firstFree int
-	var itemTypePositions []components.Position
-	ents.Each(func(e engine.Entity) {
-		e.Get(&d, &p, &i)
-
-		if len(i.Items) >= d.MaxItems {
-			return
-		}
-
-		if d.DesignationType == enums.DesignationTypeStockpile {
-			spPositions = append(spPositions, *p)
-
-			if d.ItemType == itemType {
-				itemTypePositions = append(itemTypePositions, *p)
+	var empty []components.Position
+	for pos, it := range gm.Stockpiles {
+		if it == itemType {
+			return []components.Position{
+				pos,
 			}
-
-			if firstFree == 0 && d.ItemType == enums.ItemTypeNone {
-				firstFree = e.ID()
-			}
+		} else if it == enums.ItemTypeNone {
+			empty = append(empty, pos)
 		}
-	})
-
-	if len(spPositions) == 0 {
-		return spPositions
 	}
 
-	if len(itemTypePositions) > 0 {
-		return itemTypePositions
-	}
-
-	if firstFree > 0 && assignItemType && itemType != enums.ItemTypeNone {
-		e, found := w.GetEntity(firstFree)
-		if !found {
-			log.Println("somehow failed to find entity")
-			return spPositions
-		}
-
-		e.Get(&d, &p)
-		if d == nil {
-			log.Println("designation component not found")
-			return nil
-		}
-
-		d.ItemType = itemType
-		return []components.Position{*p}
-	}
-
-	return spPositions
+	return empty
 }
 
 func AddItemToStockpile(w engine.World, pos components.Position, itemID, quatity int) {
@@ -107,6 +66,8 @@ func AddItemToStockpile(w engine.World, pos components.Position, itemID, quatity
 	var p *components.Position
 	var d *components.Designation
 	var i *components.Inventory
+
+	gm := GetGameMapSingleton(w)
 
 	for _, e := range ents {
 		e.Get(&p, &d, &i)
@@ -123,6 +84,8 @@ func AddItemToStockpile(w engine.World, pos components.Position, itemID, quatity
 			item.Get(&it)
 			it.InStockpile = true
 			it.Claimed = false
+
+			gm.Stockpiles[pos] = it.ItemType
 
 			break
 		}

@@ -27,6 +27,13 @@ func (d *Designations) Update(w engine.World) {
 	}
 	is.Get(&inputSingleton)
 
+	var gmSingleton *components.GameMapSingleton
+	gm, found := w.View(components.GameMapSingleton{}).Get()
+	if !found {
+		panic("game map singleton was not found")
+	}
+	gm.Get(&gmSingleton)
+
 	if len(inputSingleton.LeftClickedTiles) > 0 {
 		switch inputSingleton.InputMode {
 		case enums.InputModeStockpile:
@@ -37,6 +44,7 @@ func (d *Designations) Update(w engine.World) {
 					Sprite:      components.NewSprite(assets.TransImages[enums.TileTypeStockpile]),
 					Inventory:   components.NewInventory(),
 				})
+				gmSingleton.Stockpiles[st] = enums.ItemTypeNone
 			}
 		}
 	} else if len(inputSingleton.RightClickedTiles) > 0 {
@@ -65,6 +73,7 @@ func (d *Designations) Update(w engine.World) {
 							itemComp.InStockpile = false
 						}
 						entsToDelete = append(entsToDelete, e)
+						delete(gmSingleton.Stockpiles, st)
 					}
 				}
 			})

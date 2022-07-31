@@ -38,28 +38,6 @@ func GetJob(w engine.World, pos components.Position) (engine.Entity, []component
 		return j, paths
 	}
 
-	// Create jobs for haulable items not in a stockpile
-	items := w.View(components.Item{}, components.Position{}).Filter()
-	var i *components.Item
-	var p *components.Position
-
-	for _, e := range items {
-		e.Get(&i, &p)
-		if !i.Claimed && i.Haulable && !i.InStockpile {
-			spPoses := StockpileLocations(w, i.ItemType, true)
-			if len(spPoses) > 0 {
-				j := entities.Job{
-					Job: components.NewJob(components.NewTask(*p, enums.TaskTypePickUp, 1), components.NewTask(spPoses[0], enums.TaskTypeAddToStockpile, 1)),
-				}
-				j.Job.EntityId = e.ID()
-				w.AddEntities(&j)
-
-				i.Claimed = true
-				break
-			}
-		}
-	}
-
 	return nil, nil
 }
 

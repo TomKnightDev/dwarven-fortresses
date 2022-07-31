@@ -123,22 +123,22 @@ func (g Gui) scalePos(gui components.Gui) (int, int) {
 	return x, y
 }
 
-func calculatePosition(x, y, xOffset, yOffset int, gui *components.Gui) (int, int) {
-	width, height := ebiten.WindowSize()
-	xCentre := width / 2
-	yCentre := height / 2
-	switch gui.Position {
-	case enums.GuiPositionCenter:
-		return x + xCentre - xOffset/2, y + yCentre - yOffset/2
-	case enums.GuiPositionTop:
-		return x + xCentre - xOffset/2, y + yOffset
-	case enums.GuiPositionBottom:
-		return x + xCentre - xOffset/2, height - y
-	case enums.GuiPositionLeft:
-		return x + 0, y + yCentre - yOffset/2
-	case enums.GuiPositionRight:
-		return width - x - xOffset, y + yCentre - yOffset
-	default:
-		return x, y
-	}
-}
+// func calculatePosition(x, y, xOffset, yOffset int, gui *components.Gui) (int, int) {
+// 	width, height := ebiten.WindowSize()
+// 	xCentre := width / 2
+// 	yCentre := height / 2
+// 	switch gui.Position {
+// 	case enums.GuiPositionCenter:
+// 		return x + xCentre - xOffset/2, y + yCentre - yOffset/2
+// 	case enums.GuiPositionTop:
+// 		return x + xCentre - xOffset/2, y + yOffset
+// 	case enums.GuiPositionBottom:
+// 		return x + xCentre - xOffset/2, height - y
+// 	case enums.GuiPositionLeft:
+// 		return x + 0, y + yCentre - yOffset/2
+// 	case enums.GuiPositionRight:
+// 		return width - x - xOffset, y + yCentre - yOffset
+// 	default:
+// 		return x, y
+// 	}
+// }
