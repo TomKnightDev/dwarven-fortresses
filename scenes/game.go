@@ -26,6 +26,7 @@ func (g *Game) Setup(w engine.World) {
 		components.GameMapSingleton{},
 		components.RenderSingleton{},
 		components.Position{},
+		components.Flex{},
 		components.Sprite{},
 		components.Move{},
 		components.Zoom{},

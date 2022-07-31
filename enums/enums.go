@@ -100,5 +100,9 @@ const (
 
 const (
 	GuiPositionAbsolute GuiPositionEnum = iota
-	GuiPositionRelative
+	GuiPositionCenter
+	GuiPositionTop
+	GuiPositionBottom
+	GuiPositionRight
+	GuiPositionLeft
 )

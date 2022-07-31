@@ -51,12 +51,30 @@ func (g *Gui) Update(w engine.World) {
 			}
 		}
 	}
+
+	view := w.View(components.Gui{}, components.Flex{})
+	view.Each(func(e engine.Entity) {
+		var gui *components.Gui
+		var flex *components.Flex
+		e.Get(&gui, &flex)
+
+		if flex.View != nil {
+			flex.View.UpdateWithSize(ebiten.WindowSize())
+			return
+		}
+	})
 }
 
 func (g *Gui) Draw(w engine.World, screen *ebiten.Image) {
+	RenderGame(w, screen)
+	RenderUI(w, screen)
+}
+
+func RenderGame(w engine.World, screen *ebiten.Image) {
 	width, height := ebiten.WindowSize()
 	xCentre := width / 2
 	yCentre := height / 2
+
 	view := w.View(components.Gui{}, components.Sprite{})
 	view.Each(func(e engine.Entity) {
 		var gui *components.Gui
@@ -64,7 +82,7 @@ func (g *Gui) Draw(w engine.World, screen *ebiten.Image) {
 		e.Get(&gui, &sprite)
 		op := &ebiten.DrawImageOptions{}
 
-		if gui.Position == enums.GuiPositionRelative {
+		if gui.Position == enums.GuiPositionCenter {
 			gui.X = xCentre - assets.TileSize*int(gui.Scale)/2
 			gui.Y = yCentre - assets.TileSize*int(gui.Scale)/2
 		}
@@ -74,7 +92,20 @@ func (g *Gui) Draw(w engine.World, screen *ebiten.Image) {
 		op.GeoM.Scale(gui.Scale, gui.Scale)
 		screen.DrawImage(sprite.Image, op)
 	})
+}
 
+func RenderUI(w engine.World, screen *ebiten.Image) {
+	view := w.View(components.Gui{}, components.Flex{})
+	view.Each(func(e engine.Entity) {
+		var gui *components.Gui
+		var flex *components.Flex
+		e.Get(&gui, &flex)
+
+		if flex.View != nil {
+			flex.View.Draw(screen)
+			return
+		}
+	})
 }
 
 func (g Gui) Within(gui components.Gui, x, y int) bool {
@@ -90,4 +121,24 @@ func (g Gui) scalePos(gui components.Gui) (int, int) {
 	x := gui.X + int(gui.Scale)*assets.TileSize
 	y := gui.Y + int(gui.Scale)*assets.TileSize
 	return x, y
+}
+
+func calculatePosition(x, y, xOffset, yOffset int, gui *components.Gui) (int, int) {
+	width, height := ebiten.WindowSize()
+	xCentre := width / 2
+	yCentre := height / 2
+	switch gui.Position {
+	case enums.GuiPositionCenter:
+		return x + xCentre - xOffset/2, y + yCentre - yOffset/2
+	case enums.GuiPositionTop:
+		return x + xCentre - xOffset/2, y + yOffset
+	case enums.GuiPositionBottom:
+		return x + xCentre - xOffset/2, height - y
+	case enums.GuiPositionLeft:
+		return x + 0, y + yCentre - yOffset/2
+	case enums.GuiPositionRight:
+		return width - x - xOffset, y + yCentre - yOffset
+	default:
+		return x, y
+	}
 }
