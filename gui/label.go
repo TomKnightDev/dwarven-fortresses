@@ -13,11 +13,14 @@ import (
 type Label struct {
 	Text string
 	Font font.Face
+	color.Color
+
+	Button
 }
 
 var _ furex.DrawHandler = (*Label)(nil)
 
 func (l *Label) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 	rect := text.BoundString(l.Font, l.Text)
-	text.Draw(screen, l.Text, l.Font, frame.Min.X+((frame.Dx()-rect.Dx())/2), frame.Min.Y+(frame.Dy()+rect.Dy())/2, color.White)
+	text.Draw(screen, l.Text, l.Font, frame.Min.X+((frame.Dx()-rect.Dx())/2), frame.Min.Y+(frame.Dy()+rect.Dy())/2, l.Color)
 }

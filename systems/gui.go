@@ -1,10 +1,7 @@
 package systems
 
 import (
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/sedyh/mizu/pkg/engine"
 	"github.com/tomknightdev/dwarven-fortresses/assets"
 	"github.com/tomknightdev/dwarven-fortresses/components"
@@ -54,6 +51,18 @@ func (g *Gui) Update(w engine.World) {
 			}
 		}
 	}
+
+	view := w.View(components.Gui{}, components.Flex{})
+	view.Each(func(e engine.Entity) {
+		var gui *components.Gui
+		var flex *components.Flex
+		e.Get(&gui, &flex)
+
+		if flex.View != nil {
+			flex.View.UpdateWithSize(ebiten.WindowSize())
+			return
+		}
+	})
 }
 
 func (g *Gui) Draw(w engine.World, screen *ebiten.Image) {
@@ -86,22 +95,16 @@ func RenderGame(w engine.World, screen *ebiten.Image) {
 }
 
 func RenderUI(w engine.World, screen *ebiten.Image) {
-	view := w.View(components.Gui{}, components.Text{})
+	view := w.View(components.Gui{}, components.Flex{})
 	view.Each(func(e engine.Entity) {
 		var gui *components.Gui
-		var ctext *components.Text
-		e.Get(&gui, &ctext)
+		var flex *components.Flex
+		e.Get(&gui, &flex)
 
-		if gui.UIUpdate != nil {
-			gui.UIUpdate(screen)
+		if flex.View != nil {
+			flex.View.Draw(screen)
 			return
 		}
-
-		offsetRect := text.BoundString(assets.MainFont, ctext.Content)
-
-		x, y := calculatePosition(gui.X, gui.Y, offsetRect.Max.X, offsetRect.Dy(), gui)
-
-		text.Draw(screen, ctext.Content, assets.MainFont, x, y, color.White)
 	})
 }
 

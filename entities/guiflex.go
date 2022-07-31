@@ -2,8 +2,7 @@ package entities
 
 import "github.com/tomknightdev/dwarven-fortresses/components"
 
-type GuiText struct {
+type GuiFlex struct {
 	components.Gui
-	components.Position
-	components.Text
+	components.Flex
 }

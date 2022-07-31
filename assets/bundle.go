@@ -36,7 +36,9 @@ var (
 	OpaqueImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
 	TransImages   = make(map[enums.TileTypeEnum]*ebiten.Image)
 	MainAudio     *mp3.Stream
-	MainFont      font.Face
+	MainFont12    font.Face
+	MainFont24    font.Face
+	MainFont36    font.Face
 )
 
 type TilesetDefinition struct {
@@ -135,8 +137,26 @@ func LoadFonts() {
 	}
 
 	const dpi = 72
-	MainFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
+	MainFont12, err = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    12,
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	MainFont24, err = opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    24,
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	MainFont36, err = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    36,
 		DPI:     dpi,
 		Hinting: font.HintingFull,
 	})

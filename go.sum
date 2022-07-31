@@ -280,6 +280,8 @@ github.com/veandco/go-sdl2 v0.4.1/go.mod h1:FB+kTpX9YTE+urhYiClnRzpOXbiWgaU3+5F2
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/yohamta/furex/v2 v2.1.5 h1:QUCHp0WAgP4KL1mopiQsarMRyiq+YynddUUqScj1t68=
 github.com/yohamta/furex/v2 v2.1.5/go.mod h1:Q4UFgL1vXsooYnD13hZxR/6NqdCj5SsrFXKTsRvGvhY=
+github.com/yohamta/furex/v2 v2.1.6 h1:LHSwK/a3YZtYV7SfgmNW0CJ9coL6QCqlz3lTKggwraE=
+github.com/yohamta/furex/v2 v2.1.6/go.mod h1:Q4UFgL1vXsooYnD13hZxR/6NqdCj5SsrFXKTsRvGvhY=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.0/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
