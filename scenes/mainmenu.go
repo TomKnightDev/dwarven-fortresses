@@ -46,7 +46,8 @@ func (mm *MainMenu) Setup(w engine.World) {
 		NatureSingleton:  components.NewNatureSingleton(),
 	})
 
-	furex.Debug = true
+	// Debug the GUI to show component boundaries
+	// furex.Debug = true
 
 	view := &furex.View{
 		Width:      0,
