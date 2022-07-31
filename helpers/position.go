@@ -59,62 +59,6 @@ func StockpileLocations(w engine.World, itemType enums.ItemTypeEnum, assignItemT
 	}
 
 	return empty
-
-	// 	ents := w.View(components.Designation{}, components.Position{}, components.Inventory{})
-
-	// 	var d *components.Designation
-	// 	var p *components.Position
-	// 	var i *components.Inventory
-
-	// 	var spPositions []components.Position
-	// 	var firstFree int
-	// 	var itemTypePositions []components.Position
-	// 	ents.Each(func(e engine.Entity) {
-	// 		e.Get(&d, &p, &i)
-
-	// 		if len(i.Items) >= d.MaxItems {
-	// 			return
-	// 		}
-
-	// 		if d.DesignationType == enums.DesignationTypeStockpile {
-	// 			spPositions = append(spPositions, *p)
-
-	// 			if d.ItemType == itemType {
-	// 				itemTypePositions = append(itemTypePositions, *p)
-	// 			}
-
-	// 			if firstFree == 0 && d.ItemType == enums.ItemTypeNone {
-	// 				firstFree = e.ID()
-	// 			}
-	// 		}
-	// 	})
-
-	// 	if len(spPositions) == 0 {
-	// 		return spPositions
-	// 	}
-
-	// 	if len(itemTypePositions) > 0 {
-	// 		return itemTypePositions
-	// 	}
-
-	// 	if firstFree > 0 && assignItemType && itemType != enums.ItemTypeNone {
-	// 		e, found := w.GetEntity(firstFree)
-	// 		if !found {
-	// 			log.Println("somehow failed to find entity")
-	// 			return spPositions
-	// 		}
-
-	// 		e.Get(&d, &p)
-	// 		if d == nil {
-	// 			log.Println("designation component not found")
-	// 			return nil
-	// 		}
-
-	// 		d.ItemType = itemType
-	// 		return []components.Position{*p}
-	// 	}
-
-	// 	return spPositions
 }
 
 func AddItemToStockpile(w engine.World, pos components.Position, itemID, quatity int) {
