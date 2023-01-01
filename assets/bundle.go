@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"image"
 	"image/png"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -70,7 +69,7 @@ func LoadImages() {
 	}
 
 	// Read tileset json file
-	tsd, err := ioutil.ReadFile(abs)
+	tsd, err := os.ReadFile(abs)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -126,7 +125,7 @@ func LoadFonts() {
 		log.Fatal(err)
 	}
 
-	fontFile, err := ioutil.ReadFile(loc)
+	fontFile, err := os.ReadFile(loc)
 	if err != nil {
 		log.Fatal(err)
 	}
