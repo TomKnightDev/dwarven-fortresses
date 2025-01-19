@@ -16,7 +16,7 @@ func main() {
 		fmt.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
 
-	ebiten.SetWindowSize(1920, 1024)
+	ebiten.SetWindowSize(800, 600)
 	ebiten.SetWindowTitle("DWARVEN FORTRESSES")
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 

@@ -51,10 +51,7 @@ func GetPath(w engine.World, startPos components.Position, endPos components.Pos
 	travTiles[false] = gms.Ups
 	travTiles[true] = gms.Downs
 
-	direction := true
-	if endPos.Z > startPos.Z {
-		direction = false
-	}
+	direction := endPos.Z <= startPos.Z
 
 	var paths []components.Path
 	var reached bool

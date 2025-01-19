@@ -107,9 +107,10 @@ func AddBuildingToTile(w engine.World, pos components.Position, tt enums.TileTyp
 	cell := gms.Grids[pos.Z].Get(pos.X, pos.Y)
 	cell.Walkable = walkable
 
-	if tt == enums.TileTypeStairDown {
+	switch tt {
+	case enums.TileTypeStairDown:
 		gms.Downs = append(gms.Downs, pos)
-	} else if tt == enums.TileTypeStairUp {
+	case enums.TileTypeStairUp:
 		gms.Ups = append(gms.Ups, pos)
 	}
 

@@ -6,6 +6,6 @@ type Zoom struct {
 
 func NewZoom() Zoom {
 	return Zoom{
-		Value: 5,
+		Value: 2,
 	}
 }

@@ -13,8 +13,7 @@ import (
 	"github.com/tomknightdev/dwarven-fortresses/systems"
 )
 
-type Game struct {
-}
+type Game struct{}
 
 func NewGame() *Game {
 	return &Game{}
@@ -50,7 +49,6 @@ func (g *Game) Setup(w engine.World) {
 	)
 
 	w.AddSystems(
-
 		systems.NewRender(),
 		systems.NewInput(),
 		systems.NewGameMap(),
@@ -135,5 +133,5 @@ func setupAudio() {
 	// TODO Be able to set the volume in the settings
 	p.SetVolume(0.2)
 
-	// p.Play()
+	p.Play()
 }

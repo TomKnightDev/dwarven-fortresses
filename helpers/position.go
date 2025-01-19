@@ -49,11 +49,12 @@ func StockpileLocations(w engine.World, itemType enums.ItemTypeEnum, assignItemT
 
 	var empty []components.Position
 	for pos, it := range gm.Stockpiles {
-		if it == itemType {
+		switch it {
+		case itemType:
 			return []components.Position{
 				pos,
 			}
-		} else if it == enums.ItemTypeNone {
+		case enums.ItemTypeNone:
 			empty = append(empty, pos)
 		}
 	}
