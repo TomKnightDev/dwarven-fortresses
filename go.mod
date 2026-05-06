@@ -4,24 +4,23 @@ go 1.26.2
 
 require (
 	github.com/OpenSauce/paths v0.0.0-20220615082025-13bace70fd51
-	github.com/hajimehoshi/ebiten/v2 v2.3.7
+	github.com/hajimehoshi/ebiten/v2 v2.9.9
 	github.com/ojrac/opensimplex-go v1.0.2
 	github.com/sedyh/mizu v1.0.4
 	github.com/yohamta/furex/v2 v2.1.6
-	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539
+	golang.org/x/image v0.31.0
 )
 
 require (
-	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20220516021902-eb3e265c7661 // indirect
-	github.com/gofrs/flock v0.8.1 // indirect
-	github.com/hajimehoshi/go-mp3 v0.3.3 // indirect
-	github.com/hajimehoshi/oto/v2 v2.1.0 // indirect
-	github.com/jezek/xgb v1.0.1 // indirect
-	golang.org/x/exp/shiny v0.0.0-20220613132600-b0d781184e0d // indirect
-	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd // indirect
-	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
-	golang.org/x/text v0.3.7 // indirect
+	github.com/ebitengine/gomobile v0.0.0-20250923094054-ea854a63cce1 // indirect
+	github.com/ebitengine/hideconsole v1.0.0 // indirect
+	github.com/ebitengine/oto/v3 v3.4.0 // indirect
+	github.com/ebitengine/purego v0.9.0 // indirect
+	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
+	github.com/jezek/xgb v1.1.1 // indirect
+	golang.org/x/sync v0.17.0 // indirect
+	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/text v0.29.0 // indirect
 )
 
 replace github.com/OpenSauce/paths => github.com/tomknightdev/paths v0.0.0-20220603193109-b95c67e22a6a
