@@ -75,7 +75,7 @@ func (g *Game) Setup(w engine.World) {
 	})
 
 	// Actors
-	for i := 0; i < assets.StartingDwarfCount; i++ {
+	for i := 0; i < assets.Settings.DwarfCount; i++ {
 		w.AddEntities(&entities.Actor{
 			Position:  components.NewPosition(1, 1, 5),
 			Sprite:    components.NewSprite(assets.TransImages[enums.TileTypeDwarf]),

@@ -11,6 +11,6 @@ type RenderSingleton struct {
 
 func NewRenderSingleton() RenderSingleton {
 	return RenderSingleton{
-		OffScreen: ebiten.NewImage(assets.WorldWidth*assets.TileSize, assets.WorldHeight*assets.TileSize),
+		OffScreen: ebiten.NewImage(assets.Settings.MapWidth()*assets.TileSize, assets.Settings.MapHeight()*assets.TileSize),
 	}
 }

@@ -11,8 +11,9 @@ import (
 )
 
 type Label struct {
-	Text string
-	Font font.Face
+	Text    string
+	GetText func() string // if set, called each frame instead of Text
+	Font    font.Face
 	color.Color
 
 	Button
@@ -21,6 +22,10 @@ type Label struct {
 var _ furex.DrawHandler = (*Label)(nil)
 
 func (l *Label) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
-	rect := text.BoundString(l.Font, l.Text)
-	text.Draw(screen, l.Text, l.Font, frame.Min.X+((frame.Dx()-rect.Dx())/2), frame.Min.Y+(frame.Dy()+rect.Dy())/2, l.Color)
+	t := l.Text
+	if l.GetText != nil {
+		t = l.GetText()
+	}
+	rect := text.BoundString(l.Font, t)
+	text.Draw(screen, t, l.Font, frame.Min.X+((frame.Dx()-rect.Dx())/2), frame.Min.Y+(frame.Dy()+rect.Dy())/2, l.Color)
 }

@@ -29,12 +29,12 @@ func (c *Camera) Update(w engine.World) {
 	var camPos *components.Position
 	camera.Get(&zoom, &camPos)
 
-	if inputSingleton.IsCameraRightPressed && camPos.X < assets.WorldWidth*assets.TileSize {
+	if inputSingleton.IsCameraRightPressed && camPos.X < assets.Settings.MapWidth()*assets.TileSize {
 		camPos.X += assets.TileSize / 2
 	} else if inputSingleton.IsCameraLeftPressed && camPos.X > 0 {
 		camPos.X -= assets.TileSize / 2
 	}
-	if inputSingleton.IsCameraDownPressed && camPos.Y < assets.WorldHeight*assets.TileSize {
+	if inputSingleton.IsCameraDownPressed && camPos.Y < assets.Settings.MapHeight()*assets.TileSize {
 		camPos.Y += assets.TileSize / 2
 	} else if inputSingleton.IsCameraUpPressed && camPos.Y > 0 {
 		camPos.Y -= assets.TileSize / 2

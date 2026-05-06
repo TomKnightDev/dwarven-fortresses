@@ -71,10 +71,10 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 
 	// Setup world tiles
 	for z := 1; z <= assets.WorldLevels; z++ {
-		g := paths.NewGrid(assets.WorldWidth, assets.WorldHeight, assets.TileSize, assets.TileSize)
+		g := paths.NewGrid(assets.Settings.MapWidth(), assets.Settings.MapHeight(), assets.TileSize, assets.TileSize)
 		gms.Grids[z] = g
 
-		tmImage := ebiten.NewImage(assets.WorldWidth*assets.TileSize, assets.WorldHeight*assets.TileSize)
+		tmImage := ebiten.NewImage(assets.Settings.MapWidth()*assets.TileSize, assets.Settings.MapHeight()*assets.TileSize)
 
 		w.AddEntities(&entities.TileMap{
 			Sprite:   components.NewSprite(tmImage),
@@ -82,8 +82,8 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 			TileMap:  components.NewTileMap(),
 		})
 
-		for x := 0; x < assets.WorldWidth; x++ {
-			for y := 0; y < assets.WorldHeight; y++ {
+		for x := 0; x < assets.Settings.MapWidth(); x++ {
+			for y := 0; y < assets.Settings.MapHeight(); y++ {
 				c := g.Get(x, y)
 
 				tile := components.Tile{
@@ -137,17 +137,17 @@ func buildWaterTiles() map[components.Position]bool {
 	water := make(map[components.Position]bool)
 
 	// --- Lakes and ponds ---
-	// Large-scale noise (Scale=50) produces big blobs; low values become water.
+	// Large-scale noise produces blobs; values below the threshold become water.
 	lakeGen := worldgen.New()
-	lakeGen.Octaves = 2
-	lakeGen.Scale = 50.0
+	lakeGen.Octaves = 3
+	lakeGen.Scale = 35.0
 	lakeGen.Lacunarity = 2.0
-	lakeGen.Persistance = 0.5
+	lakeGen.Persistance = 0.6
 
-	for x := 0; x < assets.WorldWidth; x++ {
-		for y := 0; y < assets.WorldHeight; y++ {
+	for x := 0; x < assets.Settings.MapWidth(); x++ {
+		for y := 0; y < assets.Settings.MapHeight(); y++ {
 			v := lakeGen.GenerateXYTile(x, y)
-			if v < 0.45 {
+			if v < 0.55 {
 				water[components.NewPosition(x, y, assets.Groundlevel)] = true
 			}
 		}
@@ -162,24 +162,24 @@ func buildWaterTiles() map[components.Position]bool {
 	riverGen.Lacunarity = 2.0
 	riverGen.Persistance = 0.5
 
-	rx := assets.WorldWidth/4 + rand.Intn(assets.WorldWidth/2)
+	rx := assets.Settings.MapWidth()/4 + rand.Intn(assets.Settings.MapWidth()/2)
 
-	for y := 0; y < assets.WorldHeight; y++ {
+	for y := 0; y < assets.Settings.MapHeight(); y++ {
 		v := riverGen.GenerateXYTile(rx, y)
 		// v is roughly in [0, 2]; shift to ~[-1, 1] then scale
 		delta := int((v - 1.0) * 2.5)
 		rx += delta
-		if rx < 1 {
-			rx = 1
+		if rx < 2 {
+			rx = 2
 		}
-		if rx >= assets.WorldWidth-1 {
-			rx = assets.WorldWidth - 2
+		if rx >= assets.Settings.MapWidth()-2 {
+			rx = assets.Settings.MapWidth() - 3
 		}
 
-		// Carve a 3-tile-wide channel
-		for dx := -1; dx <= 1; dx++ {
+		// Carve a 5-tile-wide channel
+		for dx := -2; dx <= 2; dx++ {
 			nx := rx + dx
-			if nx >= 0 && nx < assets.WorldWidth {
+			if nx >= 0 && nx < assets.Settings.MapWidth() {
 				water[components.NewPosition(nx, y, assets.Groundlevel)] = true
 			}
 		}
