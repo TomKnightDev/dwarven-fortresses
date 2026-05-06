@@ -7,12 +7,9 @@ import (
 	"image"
 	"image/png"
 	"log"
-	"os"
-	"path/filepath"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/tomknightdev/dwarven-fortresses/enums"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
@@ -29,9 +26,31 @@ const (
 	StartingDwarfCount = 10
 )
 
+//go:embed images/tileset.json
+var tilesetJSON []byte
+
+//go:embed images/tiny_dungeon_interface.png
+var imgInterface []byte
+
+//go:embed images/tiny_dungeon_world.png
+var imgWorld []byte
+
+//go:embed images/tiny_dungeon_monsters.png
+var imgMonsters []byte
+
+//go:embed images/tiny_dungeon_items.png
+var imgItems []byte
+
+//go:embed audio/scenes/main.mp3
+var audioMain []byte
+
+//go:embed fonts/manaspc.ttf
+var fontMain []byte
+
+var embeddedImages = map[string][]byte{}
+
 var (
 	TileSize      int
-	tilesetImages = make(map[string]*ebiten.Image)
 	OpaqueImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
 	TransImages   = make(map[enums.TileTypeEnum]*ebiten.Image)
 	MainAudio     *mp3.Stream
@@ -57,42 +76,30 @@ type Tile struct {
 }
 
 func init() {
+	embeddedImages = map[string][]byte{
+		"tiny_dungeon_interface.png": imgInterface,
+		"tiny_dungeon_world.png":     imgWorld,
+		"tiny_dungeon_monsters.png":  imgMonsters,
+		"tiny_dungeon_items.png":     imgItems,
+	}
 	LoadImages()
 	LoadAudio()
 	LoadFonts()
 }
 
 func LoadImages() {
-	abs, err := filepath.Abs("./assets/images/tileset.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Read tileset json file
-	tsd, err := os.ReadFile(abs)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	tilesetDef := TilesetDefinition{}
-	err = json.Unmarshal(tsd, &tilesetDef)
-	if err != nil {
+	if err := json.Unmarshal(tilesetJSON, &tilesetDef); err != nil {
 		log.Fatal(err)
 	}
 
+	tilesetImages := make(map[string]*ebiten.Image)
 	for _, ts := range tilesetDef.TilesetFileNames {
-		// Read tile sets from definition
-		abs, err = filepath.Abs("./assets/images/" + ts)
-		if err != nil {
-			log.Fatal(err)
+		data, ok := embeddedImages[ts]
+		if !ok {
+			log.Fatalf("embedded image not found: %s", ts)
 		}
-
-		tileset, err := os.ReadFile(abs)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		img, err := png.Decode(bytes.NewReader(tileset))
+		img, err := png.Decode(bytes.NewReader(data))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -105,32 +112,18 @@ func LoadImages() {
 		OpaqueImages[enums.TileTypeEnum(t.Id)] = tilesetImages[t.OpaqueFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
 		TransImages[enums.TileTypeEnum(t.Id)] = tilesetImages[t.TransparentFileName].SubImage(image.Rect(t.X*TileSize, t.Y*TileSize, (t.X+1)*TileSize, (t.Y+1)*TileSize)).(*ebiten.Image)
 	}
-
 }
 
 func LoadAudio() {
-	audio, err := ebitenutil.OpenFile("./assets/audio/scenes/main.mp3")
+	stream, err := mp3.DecodeWithSampleRate(44100, bytes.NewReader(audioMain))
 	if err != nil {
 		log.Fatal(err)
 	}
-	MainAudio, err = mp3.DecodeWithSampleRate(44100, audio)
-	if err != nil {
-		log.Fatal(err)
-	}
+	MainAudio = stream
 }
 
 func LoadFonts() {
-	loc, err := filepath.Abs("./assets/fonts/manaspc.ttf")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fontFile, err := os.ReadFile(loc)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	tt, err := opentype.Parse(fontFile)
+	tt, err := opentype.Parse(fontMain)
 	if err != nil {
 		log.Fatal(err)
 	}

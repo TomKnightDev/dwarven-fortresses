@@ -136,8 +136,22 @@ func travelHeuristic(a, b components.Position) int {
 }
 
 func CreateJobs(w engine.World, jobType enums.TaskTypeEnum, jobCost int, positions ...components.Position) {
+	// Build a set of positions that already have a job of this type so we
+	// can check duplicates in O(1) instead of scanning all jobs per tile.
+	existing := make(map[components.Position]bool)
+	jobs := w.View(components.Job{}).Filter()
+	var job *components.Job
+	for _, e := range jobs {
+		e.Get(&job)
+		for _, t := range job.Tasks {
+			if t.TaskTypeEnum == jobType {
+				existing[t.Position] = true
+			}
+		}
+	}
+
 	for _, pos := range positions {
-		if e := FindJobAtTile(w, pos, jobType); e != nil {
+		if existing[pos] {
 			continue
 		}
 
@@ -151,7 +165,6 @@ func CreateJobs(w engine.World, jobType enums.TaskTypeEnum, jobCost int, positio
 				continue
 			}
 		case enums.TaskTypeBuild:
-
 		}
 
 		w.AddEntities(&entities.Job{
@@ -161,16 +174,24 @@ func CreateJobs(w engine.World, jobType enums.TaskTypeEnum, jobCost int, positio
 }
 
 func CancelJobs(w engine.World, positions ...components.Position) {
-	var entitiesToRemove []engine.Entity
-
+	// Build a position set for O(1) lookup so we only scan jobs once.
+	posSet := make(map[components.Position]bool, len(positions))
 	for _, p := range positions {
-		if e := FindJobAtTile(w, p, enums.TaskTypeNone); e != nil {
+		posSet[p] = true
+	}
+
+	var entitiesToRemove []engine.Entity
+	jobs := w.View(components.Job{}).Filter()
+	var job *components.Job
+	for _, e := range jobs {
+		e.Get(&job)
+		if len(job.Tasks) > 0 && posSet[job.Tasks[0].Position] {
 			entitiesToRemove = append(entitiesToRemove, e)
 		}
 	}
 
-	for _, job := range entitiesToRemove {
-		w.RemoveEntity(job)
+	for _, j := range entitiesToRemove {
+		w.RemoveEntity(j)
 	}
 }
 
