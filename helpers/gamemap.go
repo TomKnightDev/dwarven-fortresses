@@ -93,7 +93,10 @@ func RemoveResourceFromTile(w engine.World, pos components.Position, rt enums.Re
 	}
 
 	cell := gms.Grids[pos.Z].Get(pos.X, pos.Y)
-	cell.Walkable = walkable
+	if cell.Walkable != walkable {
+		cell.Walkable = walkable
+		MarkRegionDirty(w, gms)
+	}
 
 	RenderTile(w, pos)
 }
@@ -105,13 +108,23 @@ func AddBuildingToTile(w engine.World, pos components.Position, tt enums.TileTyp
 	tile.Buildings = append(tile.Buildings, components.NewBuilding(tt))
 
 	cell := gms.Grids[pos.Z].Get(pos.X, pos.Y)
+	walkChanged := cell.Walkable != walkable
 	cell.Walkable = walkable
 
+	addedStair := false
 	switch tt {
 	case enums.TileTypeStairDown:
 		gms.Downs = append(gms.Downs, pos)
+		addedStair = true
 	case enums.TileTypeStairUp:
 		gms.Ups = append(gms.Ups, pos)
+		addedStair = true
+	}
+
+	// A new stair changes inter-Z connectivity even if its own cell was
+	// already walkable, so always invalidate when one is placed.
+	if walkChanged || addedStair {
+		MarkRegionDirty(w, gms)
 	}
 
 	RenderTile(w, pos)
@@ -129,7 +142,10 @@ func MineTile(w engine.World, pos components.Position) {
 	tile.TileTypeEnum = enums.TileTypeRockFloor
 
 	cell := gms.Grids[pos.Z].Get(pos.X, pos.Y)
-	cell.Walkable = true
+	if !cell.Walkable {
+		cell.Walkable = true
+		MarkRegionDirty(w, gms)
+	}
 
 	RenderTile(w, pos)
 }
