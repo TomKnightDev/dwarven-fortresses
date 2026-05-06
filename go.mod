@@ -1,6 +1,6 @@
 module github.com/tomknightdev/dwarven-fortresses
 
-go 1.18
+go 1.26.2
 
 require (
 	github.com/OpenSauce/paths v0.0.0-20220615082025-13bace70fd51
