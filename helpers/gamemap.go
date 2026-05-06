@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"log"
+	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/sedyh/mizu/pkg/engine"
@@ -10,10 +11,19 @@ import (
 	"github.com/tomknightdev/dwarven-fortresses/enums"
 )
 
+var treeVariants = []enums.TileTypeEnum{
+	enums.TileTypeTree0,
+	enums.TileTypeTree1,
+	enums.TileTypeTree2,
+	enums.TileTypeTree3,
+	enums.TileTypeTree4,
+	enums.TileTypeTree5,
+}
+
 func getImageForResourceType(rt enums.ResourceTypeEnum) *ebiten.Image {
 	switch rt {
 	case enums.ResourceTypeTree:
-		return assets.OpaqueImages[enums.TileTypeTree0]
+		return assets.OpaqueImages[treeVariants[rand.Intn(len(treeVariants))]]
 	default:
 		log.Println("resource type not handled: ", rt)
 		return nil

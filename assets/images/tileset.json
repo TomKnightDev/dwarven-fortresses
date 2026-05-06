@@ -17,188 +17,508 @@
       "y": 5
     },
     {
-        "name": "cursor",
-        "id": 1,
-        "opaqueFileName": "tiny_dungeon_interface.png",
-        "transparentFileName": "tiny_dungeon_interface.png",
-        "x": 8,
-        "y": 8
-      },
-      {
-        "name": "stockpile",
-        "id": 2,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 12,
-        "y": 11
-      },
-      {
-        "name": "rock",
-        "id": 3,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 0,
-        "y": 0
-      },
-      {
-        "name": "rockfloor",
-        "id": 4,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 0,
-        "y": 4
-      },
-      {
-        "name": "rocks",
-        "id": 5,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 14,
-        "y": 12
-      },
-      {
-        "name": "dirt0",
-        "id": 6,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 0,
-        "y": 5
-      },
-      {
-        "name": "dirt1",
-        "id": 7,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 1,
-        "y": 5
-      },
-      {
-        "name": "grass0",
-        "id": 8,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 8,
-        "y": 5
-      },
-      {
-        "name": "grass1",
-        "id": 9,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 8,
-        "y": 6
-      },
-      {
-        "name": "grass2",
-        "id": 10,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 8,
-        "y": 7
-      },
-      {
-        "name": "tree0",
-        "id": 11,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 5,
-        "y": 16
-      },
-      {
-        "name": "tree1",
-        "id": 12,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 6,
-        "y": 16
-      },
-      {
-        "name": "tree2",
-        "id": 13,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 5,
-        "y": 16
-      },
-      {
-        "name": "tree3",
-        "id": 14,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 6,
-        "y": 16
-      },
-      {
-        "name": "tree4",
-        "id": 15,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 5,
-        "y": 16
-      },
-      {
-        "name": "tree5",
-        "id": 16,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 6,
-        "y": 16
-      },
-      {
-        "name": "log0",
-        "id": 17,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 3,
-        "y": 17
-      },
-      {
-        "name": "water",
-        "id": 18,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 1,
-        "y": 8
-      },
-      {
-        "name": "dwarf",
-        "id": 19,
-        "opaqueFileName": "tiny_dungeon_monsters.png",
-        "transparentFileName": "tiny_dungeon_monsters.png",
-        "x": 4,
-        "y": 24
-      },
-      {
-        "name": "stairdown",
-        "id": 20,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 13,
-        "y": 10
-      },
-      {
-        "name": "stairup",
-        "id": 21,
-        "opaqueFileName": "tiny_dungeon_world.png",
-        "transparentFileName": "tiny_dungeon_world.png",
-        "x": 13,
-        "y": 0
-      },
-      {
-        "name": "pickaxe",
-        "id": 22,
-        "opaqueFileName": "tiny_dungeon_items.png",
-        "transparentFileName": "tiny_dungeon_items.png",
-        "x": 4,
-        "y": 4
-      },
-      {
-        "name": "newgame",
-        "id":23,
-        "opaqueFileName": "tiny_dungeon_interface.png",
-        "transparentFileName": "tiny_dungeon_interface.png",
-        "x": 1,
-        "y": 6
-      }
+      "name": "cursor",
+      "id": 1,
+      "opaqueFileName": "tiny_dungeon_interface.png",
+      "transparentFileName": "tiny_dungeon_interface.png",
+      "x": 8,
+      "y": 8
+    },
+    {
+      "name": "stockpile",
+      "id": 2,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 12,
+      "y": 11
+    },
+    {
+      "name": "rock",
+      "id": 3,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "name": "rockfloor",
+      "id": 4,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 4
+    },
+    {
+      "name": "rocks",
+      "id": 5,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 15
+    },
+    {
+      "name": "dirt0",
+      "id": 6,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 1
+    },
+    {
+      "name": "dirt1",
+      "id": 7,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 1,
+      "y": 1
+    },
+    {
+      "name": "grass0",
+      "id": 8,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 8,
+      "y": 5
+    },
+    {
+      "name": "grass1",
+      "id": 9,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 9,
+      "y": 5
+    },
+    {
+      "name": "grass2",
+      "id": 10,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 10,
+      "y": 5
+    },
+    {
+      "name": "tree0",
+      "id": 11,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 5,
+      "y": 16
+    },
+    {
+      "name": "tree1",
+      "id": 12,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 6,
+      "y": 16
+    },
+    {
+      "name": "tree2",
+      "id": 13,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 5,
+      "y": 16
+    },
+    {
+      "name": "tree3",
+      "id": 14,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 6,
+      "y": 16
+    },
+    {
+      "name": "tree4",
+      "id": 15,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 5,
+      "y": 16
+    },
+    {
+      "name": "tree5",
+      "id": 16,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 6,
+      "y": 16
+    },
+    {
+      "name": "log0",
+      "id": 17,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 3,
+      "y": 17
+    },
+    {
+      "name": "water",
+      "id": 18,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 1,
+      "y": 7
+    },
+    {
+      "name": "dwarf",
+      "id": 19,
+      "opaqueFileName": "tiny_dungeon_monsters.png",
+      "transparentFileName": "tiny_dungeon_monsters.png",
+      "x": 4,
+      "y": 24
+    },
+    {
+      "name": "stairdown",
+      "id": 20,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 13,
+      "y": 10
+    },
+    {
+      "name": "stairup",
+      "id": 21,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 13,
+      "y": 0
+    },
+    {
+      "name": "pickaxe",
+      "id": 22,
+      "opaqueFileName": "tiny_dungeon_items.png",
+      "transparentFileName": "tiny_dungeon_items.png",
+      "x": 4,
+      "y": 4
+    },
+    {
+      "name": "newgame",
+      "id": 23,
+      "opaqueFileName": "tiny_dungeon_interface.png",
+      "transparentFileName": "tiny_dungeon_interface.png",
+      "x": 1,
+      "y": 6
+    },
+    {
+      "name": "grass3",
+      "id": 24,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 11,
+      "y": 4
+    },
+    {
+      "name": "grass4",
+      "id": 25,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 13,
+      "y": 4
+    },
+    {
+      "name": "rockWall1",
+      "id": 26,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 1,
+      "y": 0
+    },
+    {
+      "name": "rockWall2",
+      "id": 27,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 2,
+      "y": 0
+    },
+    {
+      "name": "rockWall3",
+      "id": 28,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 4,
+      "y": 0
+    },
+    {
+      "name": "dirt2",
+      "id": 29,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 2,
+      "y": 1
+    },
+    {
+      "name": "dirt3",
+      "id": 30,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 3,
+      "y": 1
+    },
+    {
+      "name": "sandFloor0",
+      "id": 31,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 2
+    },
+    {
+      "name": "sandFloor1",
+      "id": 32,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 1,
+      "y": 2
+    },
+    {
+      "name": "sandFloor2",
+      "id": 33,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 2,
+      "y": 2
+    },
+    {
+      "name": "stoneFloor0",
+      "id": 34,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 1,
+      "y": 4
+    },
+    {
+      "name": "stoneFloor1",
+      "id": 35,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 2,
+      "y": 4
+    },
+    {
+      "name": "stoneFloor2",
+      "id": 36,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 3,
+      "y": 4
+    },
+    {
+      "name": "water1",
+      "id": 37,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 7
+    },
+    {
+      "name": "water2",
+      "id": 38,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 2,
+      "y": 7
+    },
+    {
+      "name": "water3",
+      "id": 39,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 3,
+      "y": 7
+    },
+    {
+      "name": "water4",
+      "id": 40,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 4,
+      "y": 7
+    },
+    {
+      "name": "brightGrass0",
+      "id": 41,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 8
+    },
+    {
+      "name": "brightGrass1",
+      "id": 42,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 1,
+      "y": 8
+    },
+    {
+      "name": "brightGrass2",
+      "id": 43,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 2,
+      "y": 8
+    },
+    {
+      "name": "lavaFloor0",
+      "id": 44,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 6,
+      "y": 8
+    },
+    {
+      "name": "lavaFloor1",
+      "id": 45,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 7,
+      "y": 8
+    },
+    {
+      "name": "lavaFloor2",
+      "id": 46,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 8,
+      "y": 8
+    },
+    {
+      "name": "leafPile0",
+      "id": 47,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 13
+    },
+    {
+      "name": "leafPile1",
+      "id": 48,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 1,
+      "y": 13
+    },
+    {
+      "name": "leafPile2",
+      "id": 49,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 2,
+      "y": 13
+    },
+    {
+      "name": "leafPile3",
+      "id": 50,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 3,
+      "y": 13
+    },
+    {
+      "name": "mushroomRed",
+      "id": 51,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 5,
+      "y": 13
+    },
+    {
+      "name": "mushroomPurple",
+      "id": 52,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 6,
+      "y": 13
+    },
+    {
+      "name": "mushroomOrange",
+      "id": 53,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 7,
+      "y": 13
+    },
+    {
+      "name": "bushRound0",
+      "id": 54,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 12,
+      "y": 13
+    },
+    {
+      "name": "bushRound1",
+      "id": 55,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 13,
+      "y": 13
+    },
+    {
+      "name": "fire0",
+      "id": 56,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 12,
+      "y": 15
+    },
+    {
+      "name": "fire1",
+      "id": 57,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 13,
+      "y": 15
+    },
+    {
+      "name": "torchLit",
+      "id": 58,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 5,
+      "y": 11
+    },
+    {
+      "name": "torchUnlit",
+      "id": 59,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 6,
+      "y": 11
+    },
+    {
+      "name": "chestClosed",
+      "id": 60,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 2,
+      "y": 11
+    },
+    {
+      "name": "chestOpen",
+      "id": 61,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 0,
+      "y": 12
+    },
+    {
+      "name": "doorClosed",
+      "id": 62,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 6,
+      "y": 3
+    },
+    {
+      "name": "ironBars",
+      "id": 63,
+      "opaqueFileName": "tiny_dungeon_world.png",
+      "transparentFileName": "tiny_dungeon_world.png",
+      "x": 6,
+      "y": 10
+    }
   ]
 }
