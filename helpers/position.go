@@ -44,22 +44,70 @@ func IsAdjacent(dest components.Move, current components.Position) bool {
 	return false
 }
 
-func StockpileLocations(w engine.World, itemType enums.ItemTypeEnum, assignItemType bool) []components.Position {
-	gm := GetGameMapSingleton(w)
+const StockpileMaxItems = 10
 
-	var empty []components.Position
-	for pos, it := range gm.Stockpiles {
-		switch it {
-		case itemType:
-			return []components.Position{
-				pos,
+func stockpileEffectiveCounts(w engine.World) map[components.Position]int {
+	// Start with items already deposited
+	counts := make(map[components.Position]int)
+	ents := w.View(components.Designation{}, components.Position{}, components.Inventory{}).Filter()
+	var p *components.Position
+	var inv *components.Inventory
+	for _, e := range ents {
+		e.Get(&p, &inv)
+		counts[*p] = len(inv.Items)
+	}
+
+	// Add in-flight haul jobs so we don't over-assign a tile before dwarves arrive
+	jobs := w.View(components.Job{}).Filter()
+	var job *components.Job
+	for _, e := range jobs {
+		e.Get(&job)
+		for _, task := range job.Tasks {
+			if task.TaskTypeEnum == enums.TaskTypeAddToStockpile && !task.Completed {
+				counts[task.Position]++
+				break
 			}
-		case enums.ItemTypeNone:
-			empty = append(empty, pos)
 		}
 	}
 
-	return empty
+	return counts
+}
+
+func StockpileLocations(w engine.World, itemType enums.ItemTypeEnum, assignItemType bool) []components.Position {
+	gm := GetGameMapSingleton(w)
+	counts := stockpileEffectiveCounts(w)
+
+	// Prefer tiles already locked to this item type, then fall back to empty tiles.
+	// In both cases, pick the fullest available tile so we fill one before starting another.
+	bestTyped, bestTypedCount := components.Position{}, -1
+	bestEmpty, bestEmptyCount := components.Position{}, -1
+	foundTyped, foundEmpty := false, false
+
+	for pos, it := range gm.Stockpiles {
+		if counts[pos] >= StockpileMaxItems {
+			continue
+		}
+		switch it {
+		case itemType:
+			if !foundTyped || counts[pos] > bestTypedCount {
+				bestTyped, bestTypedCount = pos, counts[pos]
+				foundTyped = true
+			}
+		case enums.ItemTypeNone:
+			if !foundEmpty || counts[pos] > bestEmptyCount {
+				bestEmpty, bestEmptyCount = pos, counts[pos]
+				foundEmpty = true
+			}
+		}
+	}
+
+	if foundTyped {
+		return []components.Position{bestTyped}
+	}
+	if foundEmpty {
+		return []components.Position{bestEmpty}
+	}
+	return nil
 }
 
 func AddItemToStockpile(w engine.World, pos components.Position, itemID, quatity int) {
@@ -117,6 +165,11 @@ func RemoveItemFromStockpile(w engine.World, pos components.Position, itemID, qu
 			var it *components.Item
 			item.Get(&it)
 			it.InStockpile = false
+
+			if len(i.Items) == 0 {
+				gm := GetGameMapSingleton(w)
+				gm.Stockpiles[pos] = enums.ItemTypeNone
+			}
 
 			break
 		}

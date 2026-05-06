@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
-	_ "net/http/pprof"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/sedyh/mizu/pkg/engine"
@@ -12,9 +9,7 @@ import (
 )
 
 func main() {
-	go func() {
-		fmt.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
+	startPprof()
 
 	ebiten.SetWindowSize(800, 600)
 	ebiten.SetWindowTitle("DWARVEN FORTRESSES")

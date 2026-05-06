@@ -42,14 +42,29 @@ func (gm *GameMap) Draw(w engine.World, screen *ebiten.Image) {
 	helpers.DrawImages(w, ents)
 }
 
+var grassVariants = []enums.TileTypeEnum{
+	enums.TileTypeGrass0, enums.TileTypeGrass0, enums.TileTypeGrass0,
+	enums.TileTypeGrass0, enums.TileTypeGrass0,
+	enums.TileTypeGrass1, enums.TileTypeGrass1,
+	enums.TileTypeGrass2,
+}
+
 func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 	rand.Seed(time.Now().UnixNano())
 
-	treeGen := worldgen.New()
-	treeGen.Octaves = 5
-	treeGen.Scale = 5.0
-	treeGen.Lacunarity = 2.0
-	treeGen.Persistance = 0.1
+	// Large-scale noise defines where forest regions are.
+	forestNoise := worldgen.New()
+	forestNoise.Octaves = 4
+	forestNoise.Scale = 20.0
+	forestNoise.Lacunarity = 2.0
+	forestNoise.Persistance = 0.5
+
+	// Fine-scale noise breaks up forest edges and creates internal gaps.
+	scatterNoise := worldgen.New()
+	scatterNoise.Octaves = 3
+	scatterNoise.Scale = 4.0
+	scatterNoise.Lacunarity = 2.0
+	scatterNoise.Persistance = 0.6
 
 	// Pre-compute water tiles for the ground level.
 	waterTiles := buildWaterTiles()
@@ -83,11 +98,17 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 						tile.Image = assets.OpaqueImages[enums.TileTypeWater]
 						c.Walkable = false
 					} else {
-						tile.TileTypeEnum = enums.TileTypeGrass0
-						tile.Image = assets.OpaqueImages[enums.TileTypeGrass0]
+						grassType := grassVariants[rand.Intn(len(grassVariants))]
+						tile.TileTypeEnum = grassType
+						tile.Image = assets.OpaqueImages[grassType]
 
-						resourceSeed := treeGen.GenerateXYTile(tile.X, tile.Y)
-						if int(resourceSeed) == 1 {
+						forest := forestNoise.GenerateXYTile(x, y)
+						scatter := scatterNoise.GenerateXYTile(x, y)
+
+						inForest := forest > 1.15 && scatter > 1.05
+						isolated := rand.Float64() < 0.015
+
+						if inForest || isolated {
 							tile.Resources = append(tile.Resources, components.NewResource(enums.ResourceTypeTree))
 							c.Walkable = false
 						}

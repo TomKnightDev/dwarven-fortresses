@@ -18,22 +18,20 @@ func NewJob() *Job {
 }
 
 func (j *Job) Update(w engine.World) {
-	// Create jobs for haulable items not in a stockpile
+	// Create a haul job for the first unclaimed, haulable item not yet in a stockpile.
 	items := w.View(components.Item{}, components.Position{}).Filter()
 	var i *components.Item
 	var p *components.Position
-
 	for _, e := range items {
 		e.Get(&i, &p)
 		if !i.Claimed && i.Haulable && !i.InStockpile {
 			spPoses := helpers.StockpileLocations(w, i.ItemType, true)
 			if len(spPoses) > 0 {
-				j := entities.Job{
+				hj := entities.Job{
 					Job: components.NewJob(components.NewTask(*p, enums.TaskTypePickUp, 1), components.NewTask(spPoses[0], enums.TaskTypeAddToStockpile, 1)),
 				}
-				j.Job.EntityId = e.ID()
-				w.AddEntities(&j)
-
+				hj.Job.EntityId = e.ID()
+				w.AddEntities(&hj)
 				i.Claimed = true
 				break
 			}
@@ -60,15 +58,28 @@ func (j *Job) Update(w engine.World) {
 }
 
 func (j *Job) Draw(w engine.World, screen *ebiten.Image) {
-	ents := w.View(components.Job{})
+	camera, found := w.View(components.Zoom{}, components.Position{}).Get()
+	if !found {
+		return
+	}
+	var camPos *components.Position
+	camera.Get(&camPos)
+
+	rs := helpers.GetRenderSingleton(w)
+	cursorImg := assets.TransImages[enums.TileTypeCursor]
+	tileSize := float64(assets.TileSize)
+
+	var op ebiten.DrawImageOptions
 	var t *components.Job
-
-	ents.Each(func(e engine.Entity) {
+	w.View(components.Job{}).Each(func(e engine.Entity) {
 		e.Get(&t)
-
 		for _, task := range t.Tasks {
-			helpers.DrawImage(w, task.Position, assets.TransImages[enums.TileTypeCursor])
+			if task.Position.Z != camPos.Z {
+				continue
+			}
+			op.GeoM.Reset()
+			op.GeoM.Translate(float64(task.Position.X)*tileSize, float64(task.Position.Y)*tileSize)
+			rs.OffScreen.DrawImage(cursorImg, &op)
 		}
 	})
-
 }
