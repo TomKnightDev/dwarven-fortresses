@@ -222,6 +222,63 @@ func DrawImage(w engine.World, pos components.Position, image *ebiten.Image) {
 	rs.OffScreen.DrawImage(image, op)
 }
 
+// MovingRenderPosition interpolates from the entity's grid cell toward the
+// next cell in its path, based on progress toward the energy cost of the
+// current step, so movement renders as a slide rather than a per-cell snap.
+func MovingRenderPosition(pos *components.Position, move *components.Move, inv *components.Inventory) (float64, float64) {
+	x, y := float64(pos.X), float64(pos.Y)
+
+	if len(move.CurrentPaths) == 0 {
+		return x, y
+	}
+
+	next := move.CurrentPaths[0].Next()
+	if next == nil {
+		return x, y
+	}
+
+	progress := float64(move.CurrentEnergy) / float64(move.TotalEnergy+inv.Weight)
+	if progress > 1 {
+		progress = 1
+	}
+
+	return x + (float64(next.X)-x)*progress, y + (float64(next.Y)-y)*progress
+}
+
+func DrawMovingImages(w engine.World, ents engine.View) {
+	rs := GetRenderSingleton(w)
+
+	camera, found := w.View(components.Zoom{}, components.Position{}).Get()
+	if !found {
+		return
+	}
+	var camPos *components.Position
+	camera.Get(&camPos)
+
+	var s *components.Sprite
+	var p *components.Position
+	var mv *components.Move
+	var inv *components.Inventory
+
+	ents.Each(func(e engine.Entity) {
+		e.Get(&s, &p, &mv, &inv)
+
+		if p.Z != camPos.Z || !s.Drawn {
+			return
+		}
+
+		rx, ry := MovingRenderPosition(p, mv, inv)
+
+		op := &ebiten.DrawImageOptions{}
+		if mv.FacingLeft {
+			op.GeoM.Scale(-1, 1)
+			op.GeoM.Translate(float64(assets.TileSize), 0)
+		}
+		op.GeoM.Translate(rx*float64(assets.TileSize), ry*float64(assets.TileSize))
+		rs.OffScreen.DrawImage(s.Image, op)
+	})
+}
+
 func DrawImages(w engine.World, ents engine.View) {
 	rs := GetRenderSingleton(w)
 

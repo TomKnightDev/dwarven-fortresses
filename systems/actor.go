@@ -126,6 +126,6 @@ func (a *Actor) Update(w engine.World) {
 }
 
 func (a *Actor) Draw(w engine.World, screen *ebiten.Image) {
-	ents := w.View(components.Move{}, components.Position{}, components.Sprite{})
-	helpers.DrawImages(w, ents)
+	ents := w.View(components.Move{}, components.Position{}, components.Sprite{}, components.Inventory{})
+	helpers.DrawMovingImages(w, ents)
 }
