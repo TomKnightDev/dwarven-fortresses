@@ -5,7 +5,7 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/sedyh/mizu/pkg/engine"
 	"github.com/tomknightdev/dwarven-fortresses/assets"
 	"github.com/tomknightdev/dwarven-fortresses/components"
@@ -136,17 +136,27 @@ func RenderResourceCounts(w engine.World, screen *ebiten.Image) {
 	woodLabel := fmt.Sprintf("Wood: %d", logs)
 	stoneLabel := fmt.Sprintf("Rock: %d", stones)
 
-	woodBounds := text.BoundString(assets.MainFont12, woodLabel)
-	stoneBounds := text.BoundString(assets.MainFont12, stoneLabel)
+	woodWidth, _ := text.Measure(woodLabel, assets.MainFont12, 0)
+	stoneWidth, _ := text.Measure(stoneLabel, assets.MainFont12, 0)
 
 	padding := 10
-	x := width - stoneBounds.Dx() - padding
-	if woodBounds.Dx() > stoneBounds.Dx() {
-		x = width - woodBounds.Dx() - padding
+	x := width - int(stoneWidth) - padding
+	if woodWidth > stoneWidth {
+		x = width - int(woodWidth) - padding
 	}
 
-	text.Draw(screen, woodLabel, assets.MainFont12, x, 20, color.White)
-	text.Draw(screen, stoneLabel, assets.MainFont12, x, 40, color.White)
+	drawLabel(screen, woodLabel, assets.MainFont12, float64(x), 20, color.White)
+	drawLabel(screen, stoneLabel, assets.MainFont12, float64(x), 40, color.White)
+}
+
+// drawLabel draws str with its baseline at (x, yBaseline), matching the
+// positioning text/v1's Draw used before ebiten deprecated it in favor of
+// text/v2's top-left-anchored DrawOptions.
+func drawLabel(screen *ebiten.Image, str string, face text.Face, x, yBaseline float64, clr color.Color) {
+	op := &text.DrawOptions{}
+	op.GeoM.Translate(x, yBaseline-face.Metrics().HAscent)
+	op.ColorScale.ScaleWithColor(clr)
+	text.Draw(screen, str, face, op)
 }
 
 func RenderStockpileTooltip(w engine.World, screen *ebiten.Image) {
@@ -211,15 +221,15 @@ func RenderStockpileTooltip(w engine.World, screen *ebiten.Image) {
 
 	const lineH = 16
 	const padding = 4
-	maxW := 0
+	maxW := 0.0
 	for _, l := range lines {
-		b := text.BoundString(assets.MainFont12, l)
-		if b.Dx() > maxW {
-			maxW = b.Dx()
+		w, _ := text.Measure(l, assets.MainFont12, 0)
+		if w > maxW {
+			maxW = w
 		}
 	}
 
-	bgW := maxW + padding*2
+	bgW := int(maxW) + padding*2
 	bgH := len(lines)*lineH + padding*2
 	bg := ebiten.NewImage(bgW, bgH)
 	bg.Fill(color.RGBA{0, 0, 0, 200})
@@ -231,7 +241,7 @@ func RenderStockpileTooltip(w engine.World, screen *ebiten.Image) {
 	screen.DrawImage(bg, op)
 
 	for i, line := range lines {
-		text.Draw(screen, line, assets.MainFont12, tx, ty+i*lineH, color.White)
+		drawLabel(screen, line, assets.MainFont12, float64(tx), float64(ty+i*lineH), color.White)
 	}
 }
 

@@ -10,6 +10,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/tomknightdev/dwarven-fortresses/enums"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
@@ -54,9 +55,9 @@ var (
 	OpaqueImages  = make(map[enums.TileTypeEnum]*ebiten.Image)
 	TransImages   = make(map[enums.TileTypeEnum]*ebiten.Image)
 	MainAudio     *mp3.Stream
-	MainFont12    font.Face
-	MainFont24    font.Face
-	MainFont36    font.Face
+	MainFont12    text.Face
+	MainFont24    text.Face
+	MainFont36    text.Face
 )
 
 type TilesetDefinition struct {
@@ -129,7 +130,7 @@ func LoadFonts() {
 	}
 
 	const dpi = 72
-	MainFont12, err = opentype.NewFace(tt, &opentype.FaceOptions{
+	face12, err := opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    12,
 		DPI:     dpi,
 		Hinting: font.HintingFull,
@@ -137,8 +138,9 @@ func LoadFonts() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	MainFont12 = text.NewGoXFace(face12)
 
-	MainFont24, err = opentype.NewFace(tt, &opentype.FaceOptions{
+	face24, err := opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    24,
 		DPI:     dpi,
 		Hinting: font.HintingFull,
@@ -146,8 +148,9 @@ func LoadFonts() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	MainFont24 = text.NewGoXFace(face24)
 
-	MainFont36, err = opentype.NewFace(tt, &opentype.FaceOptions{
+	face36, err := opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    36,
 		DPI:     dpi,
 		Hinting: font.HintingFull,
@@ -155,4 +158,5 @@ func LoadFonts() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	MainFont36 = text.NewGoXFace(face36)
 }
