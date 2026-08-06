@@ -157,8 +157,8 @@
       "id": 18,
       "opaqueFileName": "tiny_dungeon_world.png",
       "transparentFileName": "tiny_dungeon_world.png",
-      "x": 1,
-      "y": 7
+      "x": 4,
+      "y": 8
     },
     {
       "name": "dwarf",

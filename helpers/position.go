@@ -23,7 +23,7 @@ func GetAdjacents(grid *paths.Grid, pos components.Position, walkable bool) []co
 
 	for x := -1; x < 2; x++ {
 		for y := -1; y < 2; y++ {
-			if (x == 0 && y == 0) || pos.X+x < 0 || pos.Y+y < 0 || pos.X+x > assets.WorldWidth-1 || pos.Y+y > assets.WorldHeight-1 {
+			if (x == 0 && y == 0) || pos.X+x < 0 || pos.Y+y < 0 || pos.X+x > assets.Settings.MapWidth()-1 || pos.Y+y > assets.Settings.MapHeight()-1 {
 				continue
 			}
 

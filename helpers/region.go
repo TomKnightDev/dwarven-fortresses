@@ -68,7 +68,7 @@ func AdjacentRegions(gms *components.GameMapSingleton, pos components.Position) 
 				continue
 			}
 			n := components.NewPosition(pos.X+dx, pos.Y+dy, pos.Z)
-			if n.X < 0 || n.Y < 0 || n.X >= assets.WorldWidth || n.Y >= assets.WorldHeight {
+			if n.X < 0 || n.Y < 0 || n.X >= assets.Settings.MapWidth() || n.Y >= assets.Settings.MapHeight() {
 				continue
 			}
 			id := RegionAt(gms, n)
@@ -110,7 +110,7 @@ func rebuildRegions(gms *components.GameMapSingleton) {
 		if !ok {
 			return false
 		}
-		if p.X < 0 || p.Y < 0 || p.X >= assets.WorldWidth || p.Y >= assets.WorldHeight {
+		if p.X < 0 || p.Y < 0 || p.X >= assets.Settings.MapWidth() || p.Y >= assets.Settings.MapHeight() {
 			return false
 		}
 		return g.Get(p.X, p.Y).Walkable

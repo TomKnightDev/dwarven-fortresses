@@ -1,6 +1,7 @@
 package scenes
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/sedyh/mizu/pkg/engine"
@@ -46,8 +47,99 @@ func (mm *MainMenu) Setup(w engine.World) {
 		NatureSingleton:  components.NewNatureSingleton(),
 	})
 
-	// Debug the GUI to show component boundaries
+	startGame := func() {
+		w.ChangeScene(NewGame())
+	}
+
 	// furex.Debug = true
+
+	white := color.White
+	yellow := color.RGBA{0xff, 0xff, 0, 0xff}
+	dim := color.RGBA{0xaa, 0xaa, 0xaa, 0xff}
+
+	// Helper to build a [-] / [+] row for a setting.
+	makeSettingRow := func(name string, getText func() string, onMinus, onPlus func()) *furex.View {
+		return (&furex.View{
+			Width:      480,
+			Height:     56,
+			Direction:  furex.Row,
+			Justify:    furex.JustifySpaceBetween,
+			AlignItems: furex.AlignItemCenter,
+		}).AddChild(
+			// Setting name
+			&furex.View{
+				Width:  180,
+				Height: 56,
+				Handler: &gui.Label{
+					Text:  name,
+					Font:  assets.MainFont24,
+					Color: white,
+				},
+			},
+			// Minus button
+			&furex.View{
+				Width:  56,
+				Height: 56,
+				Handler: &gui.Label{
+					Text:  "-",
+					Font:  assets.MainFont24,
+					Color: yellow,
+					Button: gui.Button{OnClick: onMinus},
+				},
+			},
+			// Current value
+			&furex.View{
+				Width:  120,
+				Height: 56,
+				Handler: &gui.Label{
+					GetText: getText,
+					Font:    assets.MainFont24,
+					Color:   white,
+				},
+			},
+			// Plus button
+			&furex.View{
+				Width:  56,
+				Height: 56,
+				Handler: &gui.Label{
+					Text:  "+",
+					Font:  assets.MainFont24,
+					Color: yellow,
+					Button: gui.Button{OnClick: onPlus},
+				},
+			},
+		)
+	}
+
+	dwarfRow := makeSettingRow(
+		"Dwarves",
+		func() string { return fmt.Sprintf("%d", assets.Settings.DwarfCount) },
+		func() {
+			if assets.Settings.DwarfCount > 1 {
+				assets.Settings.DwarfCount--
+			}
+		},
+		func() {
+			if assets.Settings.DwarfCount < 20 {
+				assets.Settings.DwarfCount++
+			}
+		},
+	)
+
+	mapRow := makeSettingRow(
+		"Map Size",
+		func() string { return assets.Settings.MapSizeName() },
+		func() {
+			if assets.Settings.MapSizeIndex > 0 {
+				assets.Settings.MapSizeIndex--
+			}
+		},
+		func() {
+			if assets.Settings.MapSizeIndex < assets.Settings.MapSizeCount()-1 {
+				assets.Settings.MapSizeIndex++
+			}
+		},
+	)
 
 	view := &furex.View{
 		Width:      0,
@@ -58,6 +150,7 @@ func (mm *MainMenu) Setup(w engine.World) {
 	}
 
 	view.AddChild(
+		// Title
 		&furex.View{
 			Width:     500,
 			Height:    100,
@@ -65,50 +158,58 @@ func (mm *MainMenu) Setup(w engine.World) {
 			Handler: &gui.Label{
 				Text:  "Dwarven Fortress",
 				Font:  assets.MainFont36,
-				Color: color.RGBA{0xff, 0xff, 0, 0xff},
+				Color: yellow,
 			},
 		},
+
+		// Centre section: settings + play
 		(&furex.View{
 			Width:      500,
-			Height:     500,
+			Height:     460,
 			Direction:  furex.Column,
 			Justify:    furex.JustifyCenter,
 			AlignItems: furex.AlignItemCenter,
 		}).AddChild(
+			// Settings panel
+			(&furex.View{
+				Width:      500,
+				Height:     140,
+				Direction:  furex.Column,
+				Justify:    furex.JustifyCenter,
+				AlignItems: furex.AlignItemCenter,
+			}).AddChild(dwarfRow, mapRow),
+
+			// Play image
 			&furex.View{
-				Width:  200,
-				Height: 200,
+				Width:  160,
+				Height: 160,
 				Handler: &gui.Image{
 					Image: assets.OpaqueImages[enums.TileTypeNewGame],
-					Scale: 10.0,
-					Button: gui.Button{
-						OnClick: func() {
-							w.ChangeScene(NewGame())
-						},
-					},
+					Scale: 8.0,
+					Button: gui.Button{OnClick: startGame},
 				},
 			},
+
+			// Play label
 			&furex.View{
 				Width:  500,
-				Height: 100,
+				Height: 60,
 				Handler: &gui.Label{
 					Text:  "Play",
 					Font:  assets.MainFont24,
-					Color: color.White,
-					Button: gui.Button{
-						OnClick: func() {
-							w.ChangeScene(NewGame())
-						},
-					},
+					Color: white,
+					Button: gui.Button{OnClick: startGame},
 				},
 			},
 		),
+
+		// Footer
 		&furex.View{
 			Width:  500,
-			Height: 100,
+			Height: 60,
 			Handler: &gui.Label{
 				Text:  "By Tom Knight and Leigh Lawley",
-				Color: color.White,
+				Color: dim,
 				Font:  assets.MainFont12,
 			},
 		},

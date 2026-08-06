@@ -63,12 +63,15 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 	scatterNoise.Lacunarity = 2.0
 	scatterNoise.Persistance = 0.6
 
+	// Pre-compute water tiles for the ground level.
+	waterTiles := buildWaterTiles()
+
 	// Setup world tiles
 	for z := 1; z <= assets.WorldLevels; z++ {
-		g := paths.NewGrid(assets.WorldWidth, assets.WorldHeight, assets.TileSize, assets.TileSize)
+		g := paths.NewGrid(assets.Settings.MapWidth(), assets.Settings.MapHeight(), assets.TileSize, assets.TileSize)
 		gms.Grids[z] = g
 
-		tmImage := ebiten.NewImage(assets.WorldWidth*assets.TileSize, assets.WorldHeight*assets.TileSize)
+		tmImage := ebiten.NewImage(assets.Settings.MapWidth()*assets.TileSize, assets.Settings.MapHeight()*assets.TileSize)
 
 		w.AddEntities(&entities.TileMap{
 			Sprite:   components.NewSprite(tmImage),
@@ -76,8 +79,8 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 			TileMap:  components.NewTileMap(),
 		})
 
-		for x := 0; x < assets.WorldWidth; x++ {
-			for y := 0; y < assets.WorldHeight; y++ {
+		for x := 0; x < assets.Settings.MapWidth(); x++ {
+			for y := 0; y < assets.Settings.MapHeight(); y++ {
 				c := g.Get(x, y)
 
 				tile := components.Tile{
@@ -87,19 +90,25 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 				gms.Tiles[tile.Position] = &tile
 
 				if z == assets.Groundlevel {
-					grassType := grassVariants[rand.Intn(len(grassVariants))]
-					tile.TileTypeEnum = grassType
-					tile.Image = assets.OpaqueImages[grassType]
-
-					forest := forestNoise.GenerateXYTile(x, y)
-					scatter := scatterNoise.GenerateXYTile(x, y)
-
-					inForest := forest > 1.15 && scatter > 1.05
-					isolated := rand.Float64() < 0.015
-
-					if inForest || isolated {
-						tile.Resources = append(tile.Resources, components.NewResource(enums.ResourceTypeTree))
+					if waterTiles[components.NewPosition(x, y, z)] {
+						tile.TileTypeEnum = enums.TileTypeWater
+						tile.Image = assets.OpaqueImages[enums.TileTypeWater]
 						c.Walkable = false
+					} else {
+						grassType := grassVariants[rand.Intn(len(grassVariants))]
+						tile.TileTypeEnum = grassType
+						tile.Image = assets.OpaqueImages[grassType]
+
+						forest := forestNoise.GenerateXYTile(x, y)
+						scatter := scatterNoise.GenerateXYTile(x, y)
+
+						inForest := forest > 1.15 && scatter > 1.05
+						isolated := rand.Float64() < 0.015
+
+						if inForest || isolated {
+							tile.Resources = append(tile.Resources, components.NewResource(enums.ResourceTypeTree))
+							c.Walkable = false
+						}
 					}
 				} else if z < assets.Groundlevel {
 					tile.TileTypeEnum = enums.TileTypeRock
@@ -116,43 +125,62 @@ func generateWorld(w engine.World, gms *components.GameMapSingleton) {
 
 	}
 
-	// for z := 0; z < assets.WorldLevels; z++ {
-	// 	// Tiles
-	// 	tmImage := ebiten.NewImage(assets.WorldWidth*assets.TileSize, assets.WorldHeight*assets.TileSize)
-	// 	tiles := gms.GetTileForZ(z)
-	// 	for _, t := range tiles {
-	// 		op := &ebiten.DrawImageOptions{}
-	// 		op.GeoM.Translate(float64(t.X*assets.TileSize), float64(t.Y*assets.TileSize))
+}
 
-	// 		for _, i := range t.Sprites {
-	// 			tmImage.DrawImage(i, op)
-	// 		}
-	// 	}
+// buildWaterTiles generates the set of ground-level positions that should be
+// water. It produces a river crossing the map from top to bottom with a gentle
+// meander, plus scattered lakes and ponds using a second noise field.
+func buildWaterTiles() map[components.Position]bool {
+	water := make(map[components.Position]bool)
 
-	// 	// Resources
-	// 	for _, r := range gms.ResourcesByZ[z] {
-	// 		w.AddEntities(&entities.Tree{
-	// 			// Sprite:    r.Sprite,
-	// 			Position:  r.Position,
-	// 			Resource:  components.NewResource(),
-	// 			Choppable: components.NewChoppable(),
-	// 			Drops:     components.NewDrops(enums.DropTypeLog, 1),
-	// 			Nature:    components.NewNature(),
-	// 		})
+	// --- Lakes and ponds ---
+	// Large-scale noise produces blobs; values below the threshold become water.
+	lakeGen := worldgen.New()
+	lakeGen.Octaves = 3
+	lakeGen.Scale = 35.0
+	lakeGen.Lacunarity = 2.0
+	lakeGen.Persistance = 0.6
 
-	// 		op := &ebiten.DrawImageOptions{}
-	// 		op.GeoM.Translate(float64(r.X*assets.TileSize), float64(r.Y*assets.TileSize))
+	for x := 0; x < assets.Settings.MapWidth(); x++ {
+		for y := 0; y < assets.Settings.MapHeight(); y++ {
+			v := lakeGen.GenerateXYTile(x, y)
+			if v < 0.55 {
+				water[components.NewPosition(x, y, assets.Groundlevel)] = true
+			}
+		}
+	}
 
-	// 		if r.Image != nil {
-	// 			tmImage.DrawImage(r.Image, op)
-	// 		}
-	// 	}
+	// --- River ---
+	// Starts at a random point on the top edge and walks to the bottom,
+	// meandering left/right guided by a noise field.
+	riverGen := worldgen.New()
+	riverGen.Octaves = 3
+	riverGen.Scale = 30.0
+	riverGen.Lacunarity = 2.0
+	riverGen.Persistance = 0.5
 
-	// 	w.AddEntities(&entities.TileMap{
-	// 		Sprite:   components.NewSprite(tmImage),
-	// 		Position: components.NewPosition(0, 0, z),
-	// 		TileMap:  components.NewTileMap(),
-	// 	})
+	rx := assets.Settings.MapWidth()/4 + rand.Intn(assets.Settings.MapWidth()/2)
 
-	// }
+	for y := 0; y < assets.Settings.MapHeight(); y++ {
+		v := riverGen.GenerateXYTile(rx, y)
+		// v is roughly in [0, 2]; shift to ~[-1, 1] then scale
+		delta := int((v - 1.0) * 2.5)
+		rx += delta
+		if rx < 2 {
+			rx = 2
+		}
+		if rx >= assets.Settings.MapWidth()-2 {
+			rx = assets.Settings.MapWidth() - 3
+		}
+
+		// Carve a 5-tile-wide channel
+		for dx := -2; dx <= 2; dx++ {
+			nx := rx + dx
+			if nx >= 0 && nx < assets.Settings.MapWidth() {
+				water[components.NewPosition(nx, y, assets.Groundlevel)] = true
+			}
+		}
+	}
+
+	return water
 }
