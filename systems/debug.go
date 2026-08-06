@@ -22,7 +22,7 @@ func (d *Debug) Update(w engine.World) {
 func (d *Debug) Draw(w engine.World, screen *ebiten.Image) {
 	// Debug information
 	msg := fmt.Sprintf("TPS: %0.2f FPS: %0.2f\n",
-		ebiten.CurrentTPS(), ebiten.CurrentFPS())
+		ebiten.ActualTPS(), ebiten.ActualFPS())
 
 	// msg += fmt.Sprintf("JOB COUNT: %d\n", len(w.View(components.Job{}).Filter()))
 

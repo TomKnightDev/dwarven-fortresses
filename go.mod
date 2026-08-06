@@ -22,6 +22,7 @@ require (
 	github.com/ebitengine/oto/v3 v3.4.0 // indirect
 	github.com/ebitengine/purego v0.10.2 // indirect
 	github.com/fatih/color v1.19.0 // indirect
+	github.com/go-text/typesetting v0.3.0 // indirect
 	github.com/goccy/go-json v0.10.6 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
@@ -34,6 +35,7 @@ require (
 	github.com/olekukonko/errors v1.3.0 // indirect
 	github.com/olekukonko/ll v0.1.8 // indirect
 	github.com/olekukonko/tablewriter v1.1.4 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
 	github.com/vanng822/css v1.0.1 // indirect
 	github.com/vanng822/go-premailer v1.35.0 // indirect
