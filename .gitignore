@@ -1,3 +1,4 @@
 *.exe
 dwarven-fortressesweb/game.wasm
 DwarvenFortresses
+.DS_Store

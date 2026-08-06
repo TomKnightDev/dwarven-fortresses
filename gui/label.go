@@ -5,15 +5,13 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/yohamta/furex/v2"
-	"golang.org/x/image/font"
 )
 
 type Label struct {
-	Text    string
-	GetText func() string // if set, called each frame instead of Text
-	Font    font.Face
+	Text string
+	Font text.Face
 	color.Color
 
 	Button
@@ -22,10 +20,11 @@ type Label struct {
 var _ furex.DrawHandler = (*Label)(nil)
 
 func (l *Label) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
-	t := l.Text
-	if l.GetText != nil {
-		t = l.GetText()
-	}
-	rect := text.BoundString(l.Font, t)
-	text.Draw(screen, t, l.Font, frame.Min.X+((frame.Dx()-rect.Dx())/2), frame.Min.Y+(frame.Dy()+rect.Dy())/2, l.Color)
+	width, height := text.Measure(l.Text, l.Font, 0)
+
+	op := &text.DrawOptions{}
+	op.GeoM.Translate(float64(frame.Min.X)+(float64(frame.Dx())-width)/2, float64(frame.Min.Y)+(float64(frame.Dy())-height)/2)
+	op.ColorScale.ScaleWithColor(l.Color)
+
+	text.Draw(screen, l.Text, l.Font, op)
 }

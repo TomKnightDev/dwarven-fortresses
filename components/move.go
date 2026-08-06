@@ -8,6 +8,7 @@ type Move struct {
 	TotalEnergy   int
 	GettingRoute  bool
 	CurrentPaths  []Path
+	FacingLeft    bool
 }
 
 func NewMove(x, y, z int) Move {

@@ -2,7 +2,6 @@ package worldgen
 
 import (
 	"math/rand"
-	"time"
 
 	"github.com/ojrac/opensimplex-go"
 )
@@ -17,7 +16,6 @@ type WorldGen struct {
 }
 
 func New() WorldGen {
-	rand.Seed(time.Now().UTC().UnixNano())
 	return WorldGen{
 		sampler: opensimplex.New(rand.Int63()),
 	}

@@ -24,6 +24,16 @@ func (p *Pathfinder) Update(w engine.World) {
 		var inv *components.Inventory
 		e.Get(&move, &pos, &inv)
 
+		if len(move.CurrentPaths) > 0 {
+			if next := move.CurrentPaths[0].Next(); next != nil {
+				if next.X < pos.X {
+					move.FacingLeft = true
+				} else if next.X > pos.X {
+					move.FacingLeft = false
+				}
+			}
+		}
+
 		if move.CurrentEnergy < move.TotalEnergy+inv.Weight {
 			move.CurrentEnergy++
 			return

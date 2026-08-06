@@ -2,7 +2,6 @@ package systems
 
 import (
 	"math/rand"
-	"time"
 
 	"github.com/OpenSauce/paths"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -50,8 +49,6 @@ var grassVariants = []enums.TileTypeEnum{
 }
 
 func generateWorld(w engine.World, gms *components.GameMapSingleton) {
-	rand.Seed(time.Now().UnixNano())
-
 	// Large-scale noise defines where forest regions are.
 	forestNoise := worldgen.New()
 	forestNoise.Octaves = 4
